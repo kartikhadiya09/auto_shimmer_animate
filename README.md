@@ -33,7 +33,7 @@ shapes and animated with [`shimmer_animation`](https://pub.dev/packages/shimmer_
 
 ## Preview
 
-<img src="https://raw.githubusercontent.com/kartikhadiya09/auto-shimmer-animate/main/screenshots/auto-shimmer-demo.gif" alt="Auto Shimmer Animate demo" width="320" />
+<img src="https://raw.githubusercontent.com/kartikhadiya09/auto_shimmer_animate/refs/heads/main/screenshots/auto-shimmer-demo.gif" alt="Auto Shimmer Animate demo" width="320" />
 
 ## Why This Package Exists
 

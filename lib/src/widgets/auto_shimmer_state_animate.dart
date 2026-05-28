@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
+
+import '../core/typedefs/auto_shimmer_builder.dart';
+import 'auto_shimmer_animate.dart';
+
+/// State-driven variant of [AutoShimmerAnimate].
+///
+/// [T] can be an enum, string, object, or any other type with meaningful
+/// equality. The skeleton is shown when [state] is contained in
+/// [loadingStates].
+class AutoShimmerStateAnimate<T> extends StatelessWidget {
+  /// Creates a shimmer wrapper controlled by an arbitrary state value.
+  const AutoShimmerStateAnimate({
+    super.key,
+    required this.state,
+    required this.loadingStates,
+    required this.child,
+    this.baseColor,
+    this.highlightColor,
+    this.duration,
+    this.interval,
+    this.borderRadius,
+    this.direction,
+    this.enabled,
+    this.ignoreContainers = false,
+    this.ignoreImages = false,
+    this.ignoreTexts = false,
+    this.shimmerBuilder,
+  });
+
+  /// Current view or controller state.
+  final T state;
+
+  /// States that should render [child] as a loading skeleton.
+  final Iterable<T> loadingStates;
+
+  /// The normal UI that should be skeletonized while loading.
+  final Widget child;
+
+  /// Overrides the skeleton shape color.
+  final Color? baseColor;
+
+  /// Overrides the shimmer highlight color.
+  final Color? highlightColor;
+
+  /// Overrides the shimmer sweep duration.
+  final Duration? duration;
+
+  /// Overrides the delay between shimmer sweeps.
+  final Duration? interval;
+
+  /// Overrides the default radius for generated skeleton boxes.
+  final BorderRadius? borderRadius;
+
+  /// Overrides the shimmer sweep direction.
+  final ShimmerDirection? direction;
+
+  /// Overrides whether the shimmer animation should run.
+  final bool? enabled;
+
+  /// Leaves `Container`, `DecoratedBox`, and `Card` visuals unchanged.
+  final bool ignoreContainers;
+
+  /// Leaves `Image` widgets visible instead of replacing them with boxes.
+  final bool ignoreImages;
+
+  /// Leaves `Text` and `RichText` widgets visible instead of replacing them
+  /// with bars.
+  final bool ignoreTexts;
+
+  /// Optional custom builder for applying shimmer to the generated skeleton.
+  final AutoShimmerBuilder? shimmerBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoShimmerAnimate(
+      isLoading: loadingStates.contains(state),
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      duration: duration,
+      interval: interval,
+      borderRadius: borderRadius,
+      direction: direction,
+      enabled: enabled,
+      ignoreContainers: ignoreContainers,
+      ignoreImages: ignoreImages,
+      ignoreTexts: ignoreTexts,
+      shimmerBuilder: shimmerBuilder,
+      child: child,
+    );
+  }
+}

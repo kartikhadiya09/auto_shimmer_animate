@@ -15,6 +15,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     required this.isLoading,
     required this.child,
     this.baseColor,
+    this.childBaseColor,
     this.highlightColor,
     this.duration,
     this.repeatDelay,
@@ -22,6 +23,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     this.borderRadius,
     this.direction,
     this.enabled,
+    this.layeredSkeleton,
     this.ignoreContainers = false,
     this.ignoreImages = false,
     this.ignoreTexts = false,
@@ -36,6 +38,9 @@ class AutoShimmerAnimate extends StatelessWidget {
 
   /// Overrides the skeleton shape color.
   final Color? baseColor;
+
+  /// Overrides the child content skeleton color.
+  final Color? childBaseColor;
 
   /// Overrides the shimmer highlight color.
   final Color? highlightColor;
@@ -59,6 +64,9 @@ class AutoShimmerAnimate extends StatelessWidget {
   /// Overrides whether the shimmer animation should run.
   final bool? enabled;
 
+  /// Overrides whether parent and child skeleton layers use separate colors.
+  final bool? layeredSkeleton;
+
   /// Leaves `Container`, `DecoratedBox`, and `Card` visuals unchanged.
   final bool ignoreContainers;
 
@@ -80,6 +88,7 @@ class AutoShimmerAnimate extends StatelessWidget {
 
     final config = ShimmerConfigBuilder(
       baseColor: baseColor,
+      childBaseColor: childBaseColor,
       highlightColor: highlightColor,
       duration: duration,
       repeatDelay: repeatDelay,
@@ -87,6 +96,7 @@ class AutoShimmerAnimate extends StatelessWidget {
       borderRadius: borderRadius,
       direction: direction,
       enabled: enabled,
+      layeredSkeleton: layeredSkeleton,
     ).build(context);
 
     final skeleton = SkeletonBuilder(

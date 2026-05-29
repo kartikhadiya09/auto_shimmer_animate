@@ -27,6 +27,7 @@ class ShimmerWrapper extends StatelessWidget {
       repeatDelay: config.effectiveRepeatDelay,
       direction: config.direction,
       enabled: config.enabled,
+      borderRadius: config.borderRadius,
       child: child,
     );
   }

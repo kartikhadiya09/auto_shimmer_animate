@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0
+
+- Added layered skeleton rendering.
+- Added childBaseColor customization.
+- Added layeredSkeleton toggle.
+- Improved default shimmer appearance.
+- Improved container, card, image, icon and text skeleton rendering.
+
 ## 0.0.2
 
 - Removed third-party shimmer animation dependency.

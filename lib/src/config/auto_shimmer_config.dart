@@ -12,6 +12,7 @@ class AutoShimmerConfig {
   /// Creates immutable shimmer configuration.
   const AutoShimmerConfig({
     this.baseColor = AutoShimmerDefaults.baseColor,
+    this.childBaseColor = AutoShimmerDefaults.childBaseColor,
     this.highlightColor = AutoShimmerDefaults.highlightColor,
     this.duration = AutoShimmerDefaults.duration,
     Duration? repeatDelay,
@@ -19,10 +20,14 @@ class AutoShimmerConfig {
     this.borderRadius = AutoShimmerDefaults.borderRadius,
     this.direction = AutoShimmerDefaults.direction,
     this.enabled = AutoShimmerDefaults.enabled,
+    this.layeredSkeleton = AutoShimmerDefaults.layeredSkeleton,
   }) : _repeatDelay = repeatDelay;
 
   /// Color used to paint generated skeleton shapes.
   final Color baseColor;
+
+  /// Color used to paint child content skeleton shapes.
+  final Color childBaseColor;
 
   /// Color used by the shimmer highlight animation.
   final Color highlightColor;
@@ -51,9 +56,19 @@ class AutoShimmerConfig {
   /// Whether the shimmer animation should run.
   final bool enabled;
 
+  /// Whether parent surfaces and child content use separate skeleton colors.
+  final bool layeredSkeleton;
+
+  /// Color used for parent surfaces such as cards and containers.
+  Color get surfaceColor => baseColor;
+
+  /// Color used for child content such as text, images and icons.
+  Color get contentColor => layeredSkeleton ? childBaseColor : baseColor;
+
   /// Returns a copy of this config with the provided values replaced.
   AutoShimmerConfig copyWith({
     Color? baseColor,
+    Color? childBaseColor,
     Color? highlightColor,
     Duration? duration,
     Duration? repeatDelay,
@@ -61,9 +76,11 @@ class AutoShimmerConfig {
     BorderRadius? borderRadius,
     AutoShimmerDirection? direction,
     bool? enabled,
+    bool? layeredSkeleton,
   }) {
     return AutoShimmerConfig(
       baseColor: baseColor ?? this.baseColor,
+      childBaseColor: childBaseColor ?? this.childBaseColor,
       highlightColor: highlightColor ?? this.highlightColor,
       duration: duration ?? this.duration,
       repeatDelay: repeatDelay ?? _repeatDelay,
@@ -72,6 +89,7 @@ class AutoShimmerConfig {
       borderRadius: borderRadius ?? this.borderRadius,
       direction: direction ?? this.direction,
       enabled: enabled ?? this.enabled,
+      layeredSkeleton: layeredSkeleton ?? this.layeredSkeleton,
     );
   }
 
@@ -80,24 +98,28 @@ class AutoShimmerConfig {
     return identical(this, other) ||
         other is AutoShimmerConfig &&
             other.baseColor == baseColor &&
+            other.childBaseColor == childBaseColor &&
             other.highlightColor == highlightColor &&
             other.duration == duration &&
             other.effectiveRepeatDelay == effectiveRepeatDelay &&
             other.borderRadius == borderRadius &&
             other.direction == direction &&
-            other.enabled == enabled;
+            other.enabled == enabled &&
+            other.layeredSkeleton == layeredSkeleton;
   }
 
   @override
   int get hashCode {
     return Object.hash(
       baseColor,
+      childBaseColor,
       highlightColor,
       duration,
       effectiveRepeatDelay,
       borderRadius,
       direction,
       enabled,
+      layeredSkeleton,
     );
   }
 }

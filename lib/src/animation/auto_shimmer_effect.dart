@@ -16,6 +16,8 @@ class AutoShimmerEffect extends StatefulWidget {
     required this.repeatDelay,
     required this.direction,
     this.enabled = true,
+    this.borderRadius,
+    this.shape,
   });
 
   /// Skeleton content to animate.
@@ -39,6 +41,12 @@ class AutoShimmerEffect extends StatefulWidget {
   /// Whether the shimmer animation should run.
   final bool enabled;
 
+  /// Optional radius used to clip the shimmer layer.
+  final BorderRadius? borderRadius;
+
+  /// Optional shape used by the shimmer layer.
+  final ShapeBorder? shape;
+
   @override
   State<AutoShimmerEffect> createState() => _AutoShimmerEffectState();
 }
@@ -49,6 +57,7 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
   static const _endOffset = 1.85;
   static const _bandSizeFactor = 0.34;
   static const _gradientStops = [0.0, 0.38, 0.5, 0.62, 1.0];
+  static const _transparent = Color(0x00000000);
 
   late final AnimationController _controller;
   late Animation<double> _position;
@@ -156,12 +165,21 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
       animation: _position,
       child: widget.child,
       builder: (context, child) {
-        return ShaderMask(
-          blendMode: BlendMode.srcATop,
+        final shimmer = ShaderMask(
+          blendMode: BlendMode.plus,
           shaderCallback: (bounds) {
             return _buildGradient(bounds, _position.value);
           },
           child: child,
+        );
+
+        if (widget.borderRadius == null) {
+          return shimmer;
+        }
+
+        return ClipRRect(
+          borderRadius: widget.borderRadius!,
+          child: shimmer,
         );
       },
     );
@@ -174,21 +192,17 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
     final extent = axis.isHorizontal ? width : height;
     final center = extent * position;
     final halfBand = extent * _bandSizeFactor;
-    final highlight = Color.lerp(
-      widget.baseColor,
-      widget.highlightColor,
-      0.72,
-    )!;
+    final highlight = widget.highlightColor.withValues(alpha: 0.42);
 
     return LinearGradient(
       begin: axis.begin,
       end: axis.end,
       colors: [
-        widget.baseColor,
-        widget.baseColor,
+        _transparent,
+        _transparent,
         highlight,
-        widget.baseColor,
-        widget.baseColor,
+        _transparent,
+        _transparent,
       ],
       stops: _gradientStops,
     ).createShader(

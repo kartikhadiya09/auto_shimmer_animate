@@ -29,6 +29,7 @@ class TextTransformer implements WidgetTransformer {
     if (transformContext.ignoreTexts) {
       return TintedSkeletonFallback(
         config: transformContext.config,
+        color: transformContext.contentColor,
         child: widget,
       );
     }
@@ -110,6 +111,7 @@ class TextSkeleton extends StatelessWidget {
           height: math.max(8.0, lineHeight * 0.68),
           child: SkeletonBox(
             config: context.config,
+            color: context.contentColor,
             borderRadius: BorderRadius.circular(lineHeight),
           ),
         ),

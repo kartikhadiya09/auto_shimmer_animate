@@ -8,12 +8,16 @@ class SkeletonBox extends StatelessWidget {
   const SkeletonBox({
     super.key,
     required this.config,
+    this.color,
     this.borderRadius,
     this.shape = BoxShape.rectangle,
   });
 
   /// Active shimmer configuration.
   final AutoShimmerConfig config;
+
+  /// Color used to paint this skeleton shape.
+  final Color? color;
 
   /// Radius for rectangular skeletons.
   final BorderRadiusGeometry? borderRadius;
@@ -23,14 +27,28 @@ class SkeletonBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: config.baseColor,
-        borderRadius: shape == BoxShape.circle
-            ? null
-            : borderRadius ?? config.borderRadius,
-        shape: shape,
-      ),
+    final decoration = BoxDecoration(
+      color: color ?? config.contentColor,
+      borderRadius:
+          shape == BoxShape.circle ? null : borderRadius ?? config.borderRadius,
+      shape: shape,
+    );
+    final box = DecoratedBox(
+      decoration: decoration,
+    );
+
+    if (shape == BoxShape.circle) {
+      return ClipOval(child: box);
+    }
+
+    final radius = decoration.borderRadius;
+    if (radius == null) {
+      return box;
+    }
+
+    return ClipRRect(
+      borderRadius: radius,
+      child: box,
     );
   }
 }

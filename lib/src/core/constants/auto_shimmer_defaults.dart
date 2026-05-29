@@ -5,10 +5,13 @@ import '../enums/auto_shimmer_direction.dart';
 /// Default values used when no theme or widget overrides are provided.
 abstract final class AutoShimmerDefaults {
   /// Default skeleton base color.
-  static const baseColor = Color(0xFFE0E0E0);
+  static const baseColor = Color(0xFFEAEAEA);
+
+  /// Default skeleton color for child content.
+  static const childBaseColor = Color(0xFFDADADA);
 
   /// Default animated highlight color.
-  static const highlightColor = Color(0xFFF5F5F5);
+  static const highlightColor = Color(0xFFF7F7F7);
 
   /// Default shimmer sweep duration.
   static const duration = Duration(milliseconds: 1900);
@@ -28,4 +31,7 @@ abstract final class AutoShimmerDefaults {
 
   /// Default shimmer animation state.
   static const enabled = true;
+
+  /// Default layered skeleton rendering state.
+  static const layeredSkeleton = true;
 }

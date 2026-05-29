@@ -17,10 +17,22 @@ class SkeletonTransformContext {
     required this.ignoreImages,
     required this.ignoreTexts,
     required this.transformChild,
+    this.depth = 0,
   });
 
   /// Active shimmer configuration.
   final AutoShimmerConfig config;
+
+  /// Current recursive transform depth.
+  final int depth;
+
+  /// Color used for surface widgets at this depth.
+  Color get surfaceColor => config.baseColor;
+
+  /// Color used for content widgets at this depth.
+  Color get contentColor {
+    return config.layeredSkeleton ? config.childBaseColor : config.baseColor;
+  }
 
   /// Whether visual container widgets should be left unchanged.
   final bool ignoreContainers;
@@ -33,6 +45,28 @@ class SkeletonTransformContext {
 
   /// Recursively transforms a child widget.
   final SkeletonChildTransformer transformChild;
+
+  /// Returns a copy of this context for nested widget content.
+  SkeletonTransformContext nextDepth() => copyWith(depth: depth + 1);
+
+  /// Returns a copy of this context with selected values replaced.
+  SkeletonTransformContext copyWith({
+    AutoShimmerConfig? config,
+    int? depth,
+    bool? ignoreContainers,
+    bool? ignoreImages,
+    bool? ignoreTexts,
+    SkeletonChildTransformer? transformChild,
+  }) {
+    return SkeletonTransformContext(
+      config: config ?? this.config,
+      depth: depth ?? this.depth,
+      ignoreContainers: ignoreContainers ?? this.ignoreContainers,
+      ignoreImages: ignoreImages ?? this.ignoreImages,
+      ignoreTexts: ignoreTexts ?? this.ignoreTexts,
+      transformChild: transformChild ?? this.transformChild,
+    );
+  }
 }
 
 /// Parsed widget node passed to a dedicated transformer.

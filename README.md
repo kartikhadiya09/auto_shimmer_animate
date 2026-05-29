@@ -17,11 +17,13 @@ widgets fall back gracefully.
 ## Features
 
 - Automatic shimmer skeleton generation
+- Layered parent and child skeleton colors
 - No duplicate loading UI
 - State-based shimmer support
 - Custom shimmer builder
 - Global shimmer theme
-- Built-in shimmer engine with no third-party shimmer dependency
+- Built-in shimmer engine
+- No third-party shimmer dependency
 - Android, iOS, Web, Windows, macOS, Linux
 
 ## Preview
@@ -32,7 +34,7 @@ widgets fall back gracefully.
 
 ```yaml
 dependencies:
-  auto_shimmer_animate: ^0.0.2
+  auto_shimmer_animate: ^0.1.0
 ```
 
 ```sh
@@ -63,6 +65,28 @@ AutoShimmerAnimate(
   isLoading: true,
   baseColor: Colors.grey.shade300,
   highlightColor: Colors.grey.shade100,
+  child: ProductCard(),
+)
+```
+
+### Layered Skeleton Colors
+
+```dart
+AutoShimmerAnimate(
+  isLoading: true,
+  baseColor: Colors.grey.shade200,
+  childBaseColor: Colors.grey.shade300,
+  highlightColor: Colors.grey.shade100,
+  child: ProductCard(),
+)
+```
+
+### Flat Skeleton Style
+
+```dart
+AutoShimmerAnimate(
+  isLoading: true,
+  layeredSkeleton: false,
   child: ProductCard(),
 )
 ```
@@ -112,10 +136,10 @@ AutoShimmerTheme(
 | API | Description |
 |------|-------------|
 | `AutoShimmerAnimate` | Automatically transforms widgets into shimmer skeletons |
-| `AutoShimmerStateAnimate<T>` | State-driven shimmer wrapper |
+| `AutoShimmerStateAnimate<T>` | State driven shimmer wrapper |
 | `AutoShimmerTheme` | Provides global shimmer configuration |
-| `AutoShimmerConfig` | Controls shimmer appearance and behavior |
-| `AutoShimmerDirection` | Controls the built-in shimmer sweep direction |
+| `AutoShimmerConfig` | Controls shimmer colors, animation and layered rendering |
+| `AutoShimmerDirection` | Controls shimmer sweep direction |
 
 ## Example
 
@@ -134,4 +158,4 @@ falls back for unsupported custom widgets.
 
 ## License
 
-MIT License
+[MIT License](https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/LICENSE)

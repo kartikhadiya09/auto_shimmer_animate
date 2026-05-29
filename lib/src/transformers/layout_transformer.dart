@@ -124,7 +124,10 @@ class LayoutTransformer implements WidgetTransformer {
       return SizedBox(
         width: widget.width,
         height: widget.height,
-        child: SkeletonBox(config: transformContext.config),
+        child: SkeletonBox(
+          config: transformContext.config,
+          color: transformContext.contentColor,
+        ),
       );
     }
 

@@ -24,10 +24,12 @@ class _ExampleAppState extends State<ExampleApp> {
   Widget build(BuildContext context) {
     return AutoShimmerTheme(
       data: AutoShimmerConfig(
-        baseColor: Colors.grey.shade300,
+        baseColor: Colors.grey.shade200,
+        childBaseColor: Colors.grey.shade300,
         highlightColor: Colors.grey.shade100,
-        duration: const Duration(milliseconds: 1300),
+        duration: const Duration(milliseconds: 1800),
         borderRadius: BorderRadius.circular(10),
+        layeredSkeleton: true,
       ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -64,7 +66,54 @@ class _ExampleAppState extends State<ExampleApp> {
             children: [
               AutoShimmerAnimate(
                 isLoading: isLoading,
-                child: const FeaturedProductCard(),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        'https://picsum.photos/seed/auto-shimmer/900/420',
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Everyday Travel Pack',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'A compact weather-resistant backpack with smart storage.',
+                            ),
+                            SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Icon(Icons.star, size: 18),
+                                SizedBox(width: 6),
+                                Text('4.8 rating'),
+                                Spacer(),
+                                Text(
+                                  '\$84.00',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               Text(
@@ -78,9 +127,26 @@ class _ExampleAppState extends State<ExampleApp> {
                 child: Column(
                   children: List.generate(
                     4,
-                    (index) => const Padding(
-                      padding: EdgeInsets.only(bottom: 12),
-                      child: ProductListTile(),
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Card(
+                        child: ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              'https://picsum.photos/seed/product-list/96',
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          title: const Text('Minimal Desk Lamp'),
+                          subtitle: const Text(
+                            'Dimmable warm light with a steel base.',
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -88,81 +154,6 @@ class _ExampleAppState extends State<ExampleApp> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class FeaturedProductCard extends StatelessWidget {
-  const FeaturedProductCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://picsum.photos/seed/auto-shimmer/900/420',
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Everyday Travel Pack',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'A compact weather-resistant backpack with smart storage.',
-                ),
-                SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.star, size: 18),
-                    SizedBox(width: 6),
-                    Text('4.8 rating'),
-                    Spacer(),
-                    Text(
-                      '\$84.00',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProductListTile extends StatelessWidget {
-  const ProductListTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            'https://picsum.photos/seed/product-list/96',
-            width: 56,
-            height: 56,
-            fit: BoxFit.cover,
-          ),
-        ),
-        title: const Text('Minimal Desk Lamp'),
-        subtitle: const Text('Dimmable warm light with a steel base.'),
-        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }

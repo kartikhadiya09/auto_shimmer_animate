@@ -20,6 +20,7 @@ class CommonWidgetAdapter implements WidgetTransformer {
   Widget transform(BuildContext context, ShimmerNode node) {
     return TintedSkeletonFallback(
       config: node.context.config,
+      color: node.context.contentColor,
       child: node.widget,
     );
   }

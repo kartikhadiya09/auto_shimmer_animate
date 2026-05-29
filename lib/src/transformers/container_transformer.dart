@@ -36,17 +36,28 @@ class ContainerTransformer implements WidgetTransformer {
     Container container,
     SkeletonTransformContext transformContext,
   ) {
-    final child = container.child?.toAutoSkeleton(context, transformContext);
+    final child = container.child?.toAutoSkeleton(
+      context,
+      transformContext.nextDepth(),
+    );
 
     if (transformContext.ignoreContainers) {
       return _copyContainer(container, child: child);
     }
 
     final decoration = _needsSkeletonDecoration(container)
-        ? SkeletonDecoration.from(container.decoration, transformContext.config)
+        ? SkeletonDecoration.from(
+            container.decoration,
+            transformContext.config,
+            color: transformContext.surfaceColor,
+          )
         : null;
 
-    return _copyContainer(container, decoration: decoration, child: child);
+    return _clipToRadius(
+      decoration: container.decoration,
+      transformContext: transformContext,
+      child: _copyContainer(container, decoration: decoration, child: child),
+    );
   }
 
   Widget _transformDecoratedBox(
@@ -54,7 +65,10 @@ class ContainerTransformer implements WidgetTransformer {
     DecoratedBox decoratedBox,
     SkeletonTransformContext transformContext,
   ) {
-    final child = decoratedBox.child?.toAutoSkeleton(context, transformContext);
+    final child = decoratedBox.child?.toAutoSkeleton(
+      context,
+      transformContext.nextDepth(),
+    );
 
     if (transformContext.ignoreContainers) {
       return DecoratedBox(
@@ -64,21 +78,43 @@ class ContainerTransformer implements WidgetTransformer {
       );
     }
 
-    return DecoratedBox(
-      decoration: SkeletonDecoration.from(
-        decoratedBox.decoration,
-        transformContext.config,
+    return _clipToRadius(
+      decoration: decoratedBox.decoration,
+      transformContext: transformContext,
+      child: DecoratedBox(
+        decoration: SkeletonDecoration.from(
+          decoratedBox.decoration,
+          transformContext.config,
+          color: transformContext.surfaceColor,
+        ),
+        position: decoratedBox.position,
+        child: child,
       ),
-      position: decoratedBox.position,
+    );
+  }
+
+  Widget _clipToRadius({
+    required Decoration? decoration,
+    required SkeletonTransformContext transformContext,
+    required Widget child,
+  }) {
+    final radius = SkeletonDecoration.radiusFrom(
+      decoration,
+      transformContext.config,
+    );
+
+    if (radius == null) {
+      return child;
+    }
+
+    return ClipRRect(
+      borderRadius: radius,
       child: child,
     );
   }
 
   bool _needsSkeletonDecoration(Container container) {
-    return container.color != null ||
-        container.decoration != null ||
-        container.foregroundDecoration != null ||
-        container.child == null;
+    return true;
   }
 
   Widget _copyContainer(
@@ -97,7 +133,7 @@ class ContainerTransformer implements WidgetTransformer {
       margin: container.margin,
       transform: container.transform,
       transformAlignment: container.transformAlignment,
-      clipBehavior: decoration == null ? Clip.none : container.clipBehavior,
+      clipBehavior: decoration == null ? Clip.none : Clip.antiAlias,
       child: child,
     );
   }

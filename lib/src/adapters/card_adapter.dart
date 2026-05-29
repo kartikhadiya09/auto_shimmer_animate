@@ -20,22 +20,30 @@ class CardAdapter implements WidgetTransformer {
   Widget transform(BuildContext context, ShimmerNode node) {
     final card = node.widget as Card;
     final transformContext = node.context;
-    final child = card.child?.toAutoSkeleton(context, transformContext);
+    final child = card.child?.toAutoSkeleton(
+      context,
+      transformContext.nextDepth(),
+    );
 
     if (transformContext.ignoreContainers) {
       return Card(
         margin: card.margin,
-        clipBehavior: card.clipBehavior,
+        clipBehavior: card.clipBehavior ?? Clip.antiAlias,
         child: child,
       );
     }
 
+    final shape = card.shape ??
+        RoundedRectangleBorder(
+          borderRadius: transformContext.config.borderRadius,
+        );
+
     return Card(
-      color: transformContext.config.baseColor,
+      color: transformContext.surfaceColor,
       margin: card.margin,
       elevation: 0,
-      shape: card.shape,
-      clipBehavior: card.clipBehavior,
+      shape: shape,
+      clipBehavior: card.clipBehavior ?? Clip.antiAlias,
       child: child,
     );
   }

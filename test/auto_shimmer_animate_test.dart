@@ -2,6 +2,8 @@ import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:auto_shimmer_animate/src/animation/auto_shimmer_effect.dart';
+
 enum TestStatus { initial, loading, loaded }
 
 void main() {
@@ -29,7 +31,7 @@ void main() {
     );
 
     expect(find.text('Loaded content'), findsNothing);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerEffect), findsOneWidget);
   });
 
   testWidgets('supports state-based loading', (tester) async {
@@ -44,7 +46,7 @@ void main() {
     );
 
     expect(find.text('Profile content'), findsNothing);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerEffect), findsOneWidget);
   });
 
   testWidgets('uses custom shimmer builder', (tester) async {
@@ -61,7 +63,45 @@ void main() {
     );
 
     expect(find.text('Custom builder content'), findsNothing);
-    expect(find.byType(Shimmer), findsNothing);
+    expect(find.byType(AutoShimmerEffect), findsNothing);
     expect(find.byType(ColoredBox), findsWidgets);
+  });
+
+  testWidgets('accepts repeatDelay', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          repeatDelay: Duration(milliseconds: 100),
+          child: Text('Delayed shimmer'),
+        ),
+      ),
+    );
+
+    final effect = tester.widget<AutoShimmerEffect>(
+      find.byType(AutoShimmerEffect),
+    );
+
+    expect(effect.repeatDelay, const Duration(milliseconds: 100));
+  });
+
+  testWidgets('enabled false keeps generated skeleton without animation',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          enabled: false,
+          child: Text('Disabled shimmer'),
+        ),
+      ),
+    );
+
+    final effect = tester.widget<AutoShimmerEffect>(
+      find.byType(AutoShimmerEffect),
+    );
+
+    expect(effect.enabled, isFalse);
+    expect(find.text('Disabled shimmer'), findsNothing);
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../core/enums/auto_shimmer_direction.dart';
 import '../core/typedefs/auto_shimmer_builder.dart';
 import 'auto_shimmer_animate.dart';
 
@@ -19,6 +19,7 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
     this.baseColor,
     this.highlightColor,
     this.duration,
+    this.repeatDelay,
     this.interval,
     this.borderRadius,
     this.direction,
@@ -47,14 +48,18 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
   /// Overrides the shimmer sweep duration.
   final Duration? duration;
 
+  /// Overrides the delay between repeated shimmer sweeps.
+  final Duration? repeatDelay;
+
   /// Overrides the delay between shimmer sweeps.
+  @Deprecated('Use repeatDelay instead.')
   final Duration? interval;
 
   /// Overrides the default radius for generated skeleton boxes.
   final BorderRadius? borderRadius;
 
   /// Overrides the shimmer sweep direction.
-  final ShimmerDirection? direction;
+  final AutoShimmerDirection? direction;
 
   /// Overrides whether the shimmer animation should run.
   final bool? enabled;
@@ -79,6 +84,7 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
       baseColor: baseColor,
       highlightColor: highlightColor,
       duration: duration,
+      repeatDelay: repeatDelay,
       interval: interval,
       borderRadius: borderRadius,
       direction: direction,

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.2
+
+- Removed third-party shimmer animation dependency.
+- Added built-in shimmer animation engine.
+- Added `repeatDelay` support.
+- Added internal shimmer direction enum.
+- Improved package independence and maintainability.
+
 ## 0.0.1
 
 ### Added

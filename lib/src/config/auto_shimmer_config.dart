@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../core/constants/auto_shimmer_defaults.dart';
+import '../core/enums/auto_shimmer_direction.dart';
 
 /// Visual and animation settings used by `AutoShimmerAnimate`.
 ///
@@ -14,11 +14,12 @@ class AutoShimmerConfig {
     this.baseColor = AutoShimmerDefaults.baseColor,
     this.highlightColor = AutoShimmerDefaults.highlightColor,
     this.duration = AutoShimmerDefaults.duration,
+    Duration? repeatDelay,
     this.interval = AutoShimmerDefaults.interval,
     this.borderRadius = AutoShimmerDefaults.borderRadius,
     this.direction = AutoShimmerDefaults.direction,
     this.enabled = AutoShimmerDefaults.enabled,
-  });
+  }) : _repeatDelay = repeatDelay;
 
   /// Color used to paint generated skeleton shapes.
   final Color baseColor;
@@ -29,14 +30,23 @@ class AutoShimmerConfig {
   /// Time taken by one shimmer sweep.
   final Duration duration;
 
+  final Duration? _repeatDelay;
+
   /// Delay between repeated shimmer sweeps.
+  Duration get repeatDelay => _repeatDelay ?? interval;
+
+  /// Delay between repeated shimmer sweeps.
+  @Deprecated('Use repeatDelay instead.')
   final Duration interval;
+
+  /// Delay used by the internal shimmer engine.
+  Duration get effectiveRepeatDelay => _repeatDelay ?? interval;
 
   /// Default radius for generated skeleton boxes.
   final BorderRadius borderRadius;
 
   /// Direction of the shimmer sweep.
-  final ShimmerDirection direction;
+  final AutoShimmerDirection direction;
 
   /// Whether the shimmer animation should run.
   final bool enabled;
@@ -46,15 +56,18 @@ class AutoShimmerConfig {
     Color? baseColor,
     Color? highlightColor,
     Duration? duration,
+    Duration? repeatDelay,
     Duration? interval,
     BorderRadius? borderRadius,
-    ShimmerDirection? direction,
+    AutoShimmerDirection? direction,
     bool? enabled,
   }) {
     return AutoShimmerConfig(
       baseColor: baseColor ?? this.baseColor,
       highlightColor: highlightColor ?? this.highlightColor,
       duration: duration ?? this.duration,
+      repeatDelay: repeatDelay ?? _repeatDelay,
+      // ignore: deprecated_member_use_from_same_package
       interval: interval ?? this.interval,
       borderRadius: borderRadius ?? this.borderRadius,
       direction: direction ?? this.direction,
@@ -69,7 +82,7 @@ class AutoShimmerConfig {
             other.baseColor == baseColor &&
             other.highlightColor == highlightColor &&
             other.duration == duration &&
-            other.interval == interval &&
+            other.effectiveRepeatDelay == effectiveRepeatDelay &&
             other.borderRadius == borderRadius &&
             other.direction == direction &&
             other.enabled == enabled;
@@ -81,7 +94,7 @@ class AutoShimmerConfig {
       baseColor,
       highlightColor,
       duration,
-      interval,
+      effectiveRepeatDelay,
       borderRadius,
       direction,
       enabled,

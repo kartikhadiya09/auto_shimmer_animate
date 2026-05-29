@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
+
+import '../enums/auto_shimmer_direction.dart';
 
 /// Default values used when no theme or widget overrides are provided.
 abstract final class AutoShimmerDefaults {
@@ -10,16 +11,20 @@ abstract final class AutoShimmerDefaults {
   static const highlightColor = Color(0xFFF5F5F5);
 
   /// Default shimmer sweep duration.
-  static const duration = Duration(milliseconds: 1500);
+  static const duration = Duration(milliseconds: 1900);
 
   /// Default delay between shimmer sweeps.
+  @Deprecated('Use repeatDelay instead.')
   static const interval = Duration.zero;
+
+  /// Default delay between repeated shimmer sweeps.
+  static const repeatDelay = Duration.zero;
 
   /// Default generated skeleton radius.
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   /// Default shimmer sweep direction.
-  static const direction = ShimmerDirection.fromLTRB();
+  static const direction = AutoShimmerDirection.leftToRight;
 
   /// Default shimmer animation state.
   static const enabled = true;

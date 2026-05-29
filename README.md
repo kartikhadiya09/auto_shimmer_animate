@@ -21,6 +21,7 @@ widgets fall back gracefully.
 - State-based shimmer support
 - Custom shimmer builder
 - Global shimmer theme
+- Built-in shimmer engine with no third-party shimmer dependency
 - Android, iOS, Web, Windows, macOS, Linux
 
 ## Preview
@@ -31,7 +32,7 @@ widgets fall back gracefully.
 
 ```yaml
 dependencies:
-  auto_shimmer_animate: ^0.0.1
+  auto_shimmer_animate: ^0.0.2
 ```
 
 ```sh
@@ -66,6 +67,27 @@ AutoShimmerAnimate(
 )
 ```
 
+### Custom Timing
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  duration: const Duration(milliseconds: 1200),
+  repeatDelay: const Duration(milliseconds: 100),
+  child: ProductCard(),
+)
+```
+
+### Custom Direction
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  direction: AutoShimmerDirection.rightToLeft,
+  child: ProductCard(),
+)
+```
+
 ### State-Based Usage
 
 ```dart
@@ -93,6 +115,7 @@ AutoShimmerTheme(
 | `AutoShimmerStateAnimate<T>` | State-driven shimmer wrapper |
 | `AutoShimmerTheme` | Provides global shimmer configuration |
 | `AutoShimmerConfig` | Controls shimmer appearance and behavior |
+| `AutoShimmerDirection` | Controls the built-in shimmer sweep direction |
 
 ## Example
 

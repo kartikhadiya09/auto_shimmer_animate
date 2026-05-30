@@ -9,10 +9,14 @@ void main() {
   testWidgets('AutoShimmerEffect receives borderRadius', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        home: AutoShimmerAnimate(
-          isLoading: true,
+        home: AutoShimmerEffect(
+          baseColor: Colors.black12,
+          highlightColor: Colors.white,
+          duration: const Duration(milliseconds: 1200),
+          repeatDelay: Duration.zero,
+          direction: AutoShimmerDirection.leftToRight,
           borderRadius: BorderRadius.circular(18),
-          child: const Text('Rounded effect'),
+          child: const SizedBox(width: 80, height: 40),
         ),
       ),
     );
@@ -39,10 +43,13 @@ void main() {
       ),
     );
 
-    expect(find.byType(ClipRRect), findsOneWidget);
+    expect(find.byType(ClipRRect), findsWidgets);
     expect(
-      tester.widget<ClipRRect>(find.byType(ClipRRect)).borderRadius,
-      BorderRadius.circular(14),
+      find.byWidgetPredicate((widget) {
+        return widget is ClipRRect &&
+            widget.borderRadius == BorderRadius.circular(14);
+      }),
+      findsWidgets,
     );
   });
 

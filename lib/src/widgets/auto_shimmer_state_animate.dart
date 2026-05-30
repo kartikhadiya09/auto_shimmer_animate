@@ -26,6 +26,8 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.highlightOpacity,
+    this.highlightWidth,
     this.ignoreContainers = false,
     this.ignoreImages = false,
     this.ignoreTexts = false,
@@ -72,6 +74,12 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
   /// Overrides whether parent and child skeleton layers use separate colors.
   final bool? layeredSkeleton;
 
+  /// Overrides the opacity of the moving shimmer highlight.
+  final double? highlightOpacity;
+
+  /// Overrides the relative width of the moving shimmer highlight.
+  final double? highlightWidth;
+
   /// Leaves `Container`, `DecoratedBox`, and `Card` visuals unchanged.
   final bool ignoreContainers;
 
@@ -99,6 +107,8 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      highlightOpacity: highlightOpacity,
+      highlightWidth: highlightWidth,
       ignoreContainers: ignoreContainers,
       ignoreImages: ignoreImages,
       ignoreTexts: ignoreTexts,

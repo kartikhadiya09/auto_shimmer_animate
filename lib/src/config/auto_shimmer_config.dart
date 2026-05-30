@@ -11,17 +11,36 @@ import '../core/enums/auto_shimmer_direction.dart';
 class AutoShimmerConfig {
   /// Creates immutable shimmer configuration.
   const AutoShimmerConfig({
-    this.baseColor = AutoShimmerDefaults.baseColor,
-    this.childBaseColor = AutoShimmerDefaults.childBaseColor,
-    this.highlightColor = AutoShimmerDefaults.highlightColor,
-    this.duration = AutoShimmerDefaults.duration,
+    Color? baseColor,
+    Color? childBaseColor,
+    Color? highlightColor,
+    Duration? duration,
     Duration? repeatDelay,
-    this.interval = AutoShimmerDefaults.interval,
-    this.borderRadius = AutoShimmerDefaults.borderRadius,
-    this.direction = AutoShimmerDefaults.direction,
-    this.enabled = AutoShimmerDefaults.enabled,
-    this.layeredSkeleton = AutoShimmerDefaults.layeredSkeleton,
-  }) : _repeatDelay = repeatDelay;
+    @Deprecated('Use repeatDelay instead.') Duration? interval,
+    BorderRadius? borderRadius,
+    AutoShimmerDirection? direction,
+    bool? enabled,
+    bool? layeredSkeleton,
+    bool? perElementShimmer,
+    double? highlightOpacity,
+    double? highlightWidth,
+  })  : baseColor = baseColor ?? AutoShimmerDefaults.baseColor,
+        childBaseColor = childBaseColor ?? AutoShimmerDefaults.childBaseColor,
+        highlightColor = highlightColor ?? AutoShimmerDefaults.highlightColor,
+        duration = duration ?? AutoShimmerDefaults.duration,
+        _repeatDelay = repeatDelay,
+        // ignore: deprecated_member_use_from_same_package
+        interval = interval ?? AutoShimmerDefaults.interval,
+        borderRadius = borderRadius ?? AutoShimmerDefaults.borderRadius,
+        direction = direction ?? AutoShimmerDefaults.direction,
+        enabled = enabled ?? AutoShimmerDefaults.enabled,
+        layeredSkeleton =
+            layeredSkeleton ?? AutoShimmerDefaults.layeredSkeleton,
+        perElementShimmer =
+            perElementShimmer ?? AutoShimmerDefaults.perElementShimmer,
+        highlightOpacity =
+            highlightOpacity ?? AutoShimmerDefaults.highlightOpacity,
+        highlightWidth = highlightWidth ?? AutoShimmerDefaults.highlightWidth;
 
   /// Color used to paint generated skeleton shapes.
   final Color baseColor;
@@ -59,6 +78,15 @@ class AutoShimmerConfig {
   /// Whether parent surfaces and child content use separate skeleton colors.
   final bool layeredSkeleton;
 
+  /// Whether individual skeleton elements animate independently.
+  final bool perElementShimmer;
+
+  /// Opacity used for the moving shimmer highlight.
+  final double highlightOpacity;
+
+  /// Relative width used for the moving shimmer highlight.
+  final double highlightWidth;
+
   /// Color used for parent surfaces such as cards and containers.
   Color get surfaceColor => baseColor;
 
@@ -77,6 +105,9 @@ class AutoShimmerConfig {
     AutoShimmerDirection? direction,
     bool? enabled,
     bool? layeredSkeleton,
+    bool? perElementShimmer,
+    double? highlightOpacity,
+    double? highlightWidth,
   }) {
     return AutoShimmerConfig(
       baseColor: baseColor ?? this.baseColor,
@@ -90,6 +121,9 @@ class AutoShimmerConfig {
       direction: direction ?? this.direction,
       enabled: enabled ?? this.enabled,
       layeredSkeleton: layeredSkeleton ?? this.layeredSkeleton,
+      perElementShimmer: perElementShimmer ?? this.perElementShimmer,
+      highlightOpacity: highlightOpacity ?? this.highlightOpacity,
+      highlightWidth: highlightWidth ?? this.highlightWidth,
     );
   }
 
@@ -105,7 +139,10 @@ class AutoShimmerConfig {
             other.borderRadius == borderRadius &&
             other.direction == direction &&
             other.enabled == enabled &&
-            other.layeredSkeleton == layeredSkeleton;
+            other.layeredSkeleton == layeredSkeleton &&
+            other.perElementShimmer == perElementShimmer &&
+            other.highlightOpacity == highlightOpacity &&
+            other.highlightWidth == highlightWidth;
   }
 
   @override
@@ -120,6 +157,9 @@ class AutoShimmerConfig {
       direction,
       enabled,
       layeredSkeleton,
+      perElementShimmer,
+      highlightOpacity,
+      highlightWidth,
     );
   }
 }

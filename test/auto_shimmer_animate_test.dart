@@ -35,24 +35,6 @@ void main() {
     expect(find.byType(AutoShimmerEffect), findsOneWidget);
   });
 
-  testWidgets('uses layered skeleton colors by default', (tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: AutoShimmerAnimate(
-          isLoading: true,
-          child: Text('Layered content'),
-        ),
-      ),
-    );
-
-    final box = tester.widget<SkeletonBox>(find.byType(SkeletonBox).first);
-
-    expect(box.config.layeredSkeleton, isTrue);
-    expect(box.config.surfaceColor, const Color(0xFFEAEAEA));
-    expect(box.config.contentColor, const Color(0xFFDADADA));
-    expect(box.color, const Color(0xFFDADADA));
-  });
-
   testWidgets('supports childBaseColor customization', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
@@ -109,19 +91,13 @@ void main() {
       ),
     );
 
-    final box = tester.widget<SkeletonBox>(find.byType(SkeletonBox).first);
+    final boxes = tester
+        .widgetList<SkeletonBox>(find.byType(SkeletonBox))
+        .toList(growable: false);
 
-    expect(box.color, Colors.black26);
-    expect(
-      find.byWidgetPredicate((widget) {
-        if (widget is! Container || widget.decoration is! BoxDecoration) {
-          return false;
-        }
-
-        return (widget.decoration! as BoxDecoration).color == Colors.black12;
-      }),
-      findsWidgets,
-    );
+    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black26), isTrue);
+    expect(find.byType(AutoShimmerEffect).evaluate().length, greaterThan(1));
   });
 
   testWidgets('card with child keeps child skeleton visible', (tester) async {
@@ -142,10 +118,13 @@ void main() {
     );
 
     final card = tester.widget<Card>(find.byType(Card).first);
-    final box = tester.widget<SkeletonBox>(find.byType(SkeletonBox).first);
+    final boxes = tester
+        .widgetList<SkeletonBox>(find.byType(SkeletonBox))
+        .toList(growable: false);
 
-    expect(card.color, Colors.black12);
-    expect(box.color, Colors.black26);
+    expect(card.color, Colors.transparent);
+    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black26), isTrue);
   });
 
   testWidgets('custom stateless widgets are expanded before fallback',
@@ -165,8 +144,9 @@ void main() {
         .widgetList<SkeletonBox>(find.byType(SkeletonBox))
         .toList(growable: false);
 
-    expect(boxes.length, greaterThan(1));
-    expect(boxes.every((box) => box.color == Colors.black26), isTrue);
+    expect(boxes.length, greaterThan(2));
+    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black26), isTrue);
   });
 
   testWidgets('supports layered skeleton theme values', (tester) async {

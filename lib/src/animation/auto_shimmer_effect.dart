@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'auto_shimmer_gradient.dart';
+import 'auto_shimmer_scope.dart';
+import '../core/constants/auto_shimmer_defaults.dart';
 import '../core/enums/auto_shimmer_direction.dart';
 
 /// Built-in shimmer animation used by generated skeletons.
@@ -18,6 +21,9 @@ class AutoShimmerEffect extends StatefulWidget {
     this.enabled = true,
     this.borderRadius,
     this.shape,
+    this.animation,
+    this.highlightOpacity = AutoShimmerDefaults.highlightOpacity,
+    this.highlightWidth = AutoShimmerDefaults.highlightWidth,
   });
 
   /// Skeleton content to animate.
@@ -47,31 +53,29 @@ class AutoShimmerEffect extends StatefulWidget {
   /// Optional shape used by the shimmer layer.
   final ShapeBorder? shape;
 
+  /// Optional shared shimmer animation.
+  final Animation<double>? animation;
+
+  /// Opacity used for the moving shimmer highlight.
+  final double highlightOpacity;
+
+  /// Relative width used for the moving shimmer highlight.
+  final double highlightWidth;
+
   @override
   State<AutoShimmerEffect> createState() => _AutoShimmerEffectState();
 }
 
 class _AutoShimmerEffectState extends State<AutoShimmerEffect>
     with SingleTickerProviderStateMixin {
-  static const _startOffset = -0.85;
-  static const _endOffset = 1.85;
-  static const _bandSizeFactor = 0.34;
-  static const _gradientStops = [0.0, 0.38, 0.5, 0.62, 1.0];
-  static const _transparent = Color(0x00000000);
-
-  late final AnimationController _controller;
-  late Animation<double> _position;
+  AnimationController? _controller;
   bool _isLooping = false;
   int _loopToken = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
-    _position = _buildPositionAnimation();
+    _configureFallbackController();
     _startLoopIfNeeded();
   }
 
@@ -79,45 +83,47 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
   void didUpdateWidget(covariant AutoShimmerEffect oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.duration != widget.duration) {
-      _controller.duration = widget.duration;
+    if (oldWidget.animation != widget.animation) {
+      _configureFallbackController();
     }
 
-    if (oldWidget.direction != widget.direction) {
-      _position = _buildPositionAnimation();
+    if (_controller != null && oldWidget.duration != widget.duration) {
+      _controller!.duration = widget.duration;
     }
 
     if (!widget.enabled) {
       _loopToken++;
       _isLooping = false;
-      _controller.stop(canceled: true);
-      _controller.value = 0;
+      _controller?.stop(canceled: true);
+      _controller?.value = 0;
       return;
     }
 
     _startLoopIfNeeded();
   }
 
-  Animation<double> _buildPositionAnimation() {
-    final isReverse = switch (widget.direction) {
-      AutoShimmerDirection.rightToLeft ||
-      AutoShimmerDirection.bottomToTop =>
-        true,
-      AutoShimmerDirection.leftToRight ||
-      AutoShimmerDirection.topToBottom =>
-        false,
-    };
+  Animation<double> get _activeAnimation {
+    return widget.animation ?? _controller!;
+  }
 
-    return Tween<double>(
-      begin: isReverse ? _endOffset : _startOffset,
-      end: isReverse ? _startOffset : _endOffset,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.linear),
+  void _configureFallbackController() {
+    if (widget.animation != null) {
+      _loopToken++;
+      _isLooping = false;
+      _controller?.stop(canceled: true);
+      _controller?.dispose();
+      _controller = null;
+      return;
+    }
+
+    _controller ??= AnimationController(
+      vsync: this,
+      duration: widget.duration,
     );
   }
 
   void _startLoopIfNeeded() {
-    if (!widget.enabled || _isLooping) {
+    if (!widget.enabled || _isLooping || widget.animation != null) {
       return;
     }
 
@@ -128,7 +134,7 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
   Future<void> _runLoop(int token) async {
     while (mounted && widget.enabled && token == _loopToken) {
       try {
-        await _controller.forward(from: 0).orCancel;
+        await _controller!.forward(from: 0).orCancel;
       } on TickerCanceled {
         break;
       }
@@ -150,8 +156,8 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
   @override
   void dispose() {
     _loopToken++;
-    _controller.stop(canceled: true);
-    _controller.dispose();
+    _controller?.stop(canceled: true);
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -162,13 +168,18 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
     }
 
     return AnimatedBuilder(
-      animation: _position,
+      animation: _activeAnimation,
       child: widget.child,
       builder: (context, child) {
+        final shaderBoundsResolver =
+            AutoShimmerScope.shaderBoundsResolverOf(context);
         final shimmer = ShaderMask(
-          blendMode: BlendMode.plus,
+          blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
-            return _buildGradient(bounds, _position.value);
+            final shaderBounds =
+                shaderBoundsResolver?.call(context, bounds) ?? bounds;
+
+            return _buildGradient(shaderBounds, _activeAnimation.value);
           },
           child: child,
         );
@@ -189,27 +200,29 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
     final width = bounds.width == 0 ? 1.0 : bounds.width;
     final height = bounds.height == 0 ? 1.0 : bounds.height;
     final axis = _axisFor(widget.direction);
-    final extent = axis.isHorizontal ? width : height;
-    final center = extent * position;
-    final halfBand = extent * _bandSizeFactor;
-    final highlight = widget.highlightColor.withValues(alpha: 0.42);
+    final slide = AutoShimmerGradient.slide(position, widget.direction);
+    final highlight = AutoShimmerGradient.effectiveHighlight(
+      widget.baseColor,
+      widget.highlightColor,
+      widget.highlightOpacity,
+    );
 
     return LinearGradient(
       begin: axis.begin,
       end: axis.end,
       colors: [
-        _transparent,
-        _transparent,
+        widget.baseColor,
+        widget.baseColor,
         highlight,
-        _transparent,
-        _transparent,
+        widget.baseColor,
+        widget.baseColor,
       ],
-      stops: _gradientStops,
-    ).createShader(
-      axis.isHorizontal
-          ? Rect.fromLTWH(center - halfBand, 0, halfBand * 2, height)
-          : Rect.fromLTWH(0, center - halfBand, width, halfBand * 2),
-    );
+      stops: AutoShimmerGradient.stops(widget.highlightWidth),
+      transform: _SlidingGradientTransform(
+        dx: axis.isHorizontal ? slide * width : 0,
+        dy: axis.isHorizontal ? 0 : slide * height,
+      ),
+    ).createShader(bounds);
   }
 
   _ShimmerAxis _axisFor(AutoShimmerDirection direction) {
@@ -235,6 +248,21 @@ class _AutoShimmerEffectState extends State<AutoShimmerEffect>
           isHorizontal: false,
         ),
     };
+  }
+}
+
+class _SlidingGradientTransform extends GradientTransform {
+  const _SlidingGradientTransform({
+    required this.dx,
+    required this.dy,
+  });
+
+  final double dx;
+  final double dy;
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(dx, dy, 0);
   }
 }
 

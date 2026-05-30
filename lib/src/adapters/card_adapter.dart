@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../builders/widget_transformer.dart';
 import '../core/enums/shimmer_node_kind.dart';
 import '../core/extensions/widget_transform_extensions.dart';
+import '../core/utils/skeleton_box.dart';
 import '../models/shimmer_node.dart';
 
 /// Adapts `Card` widgets while preserving Material layout semantics.
@@ -37,14 +38,28 @@ class CardAdapter implements WidgetTransformer {
         RoundedRectangleBorder(
           borderRadius: transformContext.config.borderRadius,
         );
+    final borderRadius = shape is RoundedRectangleBorder
+        ? shape.borderRadius
+        : transformContext.config.borderRadius;
 
     return Card(
-      color: transformContext.surfaceColor,
+      color: Colors.transparent,
       margin: card.margin,
       elevation: 0,
       shape: shape,
       clipBehavior: card.clipBehavior ?? Clip.antiAlias,
-      child: child,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: SkeletonBox(
+              config: transformContext.config,
+              color: transformContext.surfaceColor,
+              borderRadius: borderRadius,
+            ),
+          ),
+          if (child != null) child,
+        ],
+      ),
     );
   }
 }

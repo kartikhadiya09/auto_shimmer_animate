@@ -18,6 +18,8 @@ class ShimmerConfigBuilder {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.highlightOpacity,
+    this.highlightWidth,
   });
 
   /// Optional base color override.
@@ -51,6 +53,12 @@ class ShimmerConfigBuilder {
   /// Optional layered rendering override.
   final bool? layeredSkeleton;
 
+  /// Optional highlight opacity override.
+  final double? highlightOpacity;
+
+  /// Optional highlight width override.
+  final double? highlightWidth;
+
   /// Resolves the final config for [context].
   AutoShimmerConfig build(BuildContext context) {
     return AutoShimmerTheme.of(context).copyWith(
@@ -64,6 +72,8 @@ class ShimmerConfigBuilder {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      highlightOpacity: highlightOpacity,
+      highlightWidth: highlightWidth,
     );
   }
 }

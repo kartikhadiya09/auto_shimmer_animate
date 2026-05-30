@@ -7,6 +7,11 @@
 - Added layeredSkeleton toggle.
 - Improved default shimmer appearance.
 - Improved container, card, image, icon and text skeleton rendering.
+- Improved default shimmer color contrast.
+- Added synchronized per-element shimmer animation.
+- Added highlightOpacity and highlightWidth tuning.
+- Improved shared shimmer gradient alignment.
+- Kept optional color overrides default-safe.
 
 ## 0.0.2
 

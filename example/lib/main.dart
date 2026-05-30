@@ -23,14 +23,7 @@ class _ExampleAppState extends State<ExampleApp> {
   @override
   Widget build(BuildContext context) {
     return AutoShimmerTheme(
-      data: AutoShimmerConfig(
-        baseColor: Colors.grey.shade200,
-        childBaseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
-        duration: const Duration(milliseconds: 1800),
-        borderRadius: BorderRadius.circular(10),
-        layeredSkeleton: true,
-      ),
+      data: const AutoShimmerConfig(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Auto Shimmer Animate',

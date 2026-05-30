@@ -9,6 +9,7 @@ class TintedSkeletonFallback extends StatelessWidget {
     super.key,
     required this.config,
     required this.child,
+    this.color,
   });
 
   /// Active shimmer configuration.
@@ -17,10 +18,16 @@ class TintedSkeletonFallback extends StatelessWidget {
   /// Original widget to preserve layout.
   final Widget child;
 
+  /// Tint color override.
+  final Color? color;
+
   @override
   Widget build(BuildContext context) {
     return ColorFiltered(
-      colorFilter: ColorFilter.mode(config.baseColor, BlendMode.srcATop),
+      colorFilter: ColorFilter.mode(
+        color ?? config.contentColor,
+        BlendMode.srcATop,
+      ),
       child: child,
     );
   }

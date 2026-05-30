@@ -25,6 +25,7 @@ class ImageTransformer implements WidgetTransformer {
     if (transformContext.ignoreImages) {
       return TintedSkeletonFallback(
         config: transformContext.config,
+        color: transformContext.contentColor,
         child: image,
       );
     }
@@ -66,7 +67,10 @@ class ImageSkeleton extends StatelessWidget {
       child: SizedBox(
         width: width,
         height: height,
-        child: SkeletonBox(config: this.context.config),
+        child: SkeletonBox(
+          config: this.context.config,
+          color: this.context.contentColor,
+        ),
       ),
     );
   }

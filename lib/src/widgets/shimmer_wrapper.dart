@@ -20,6 +20,10 @@ class ShimmerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (config.layeredSkeleton && config.perElementShimmer) {
+      return child;
+    }
+
     return AutoShimmerEffect(
       baseColor: config.baseColor,
       highlightColor: config.highlightColor,
@@ -27,6 +31,9 @@ class ShimmerWrapper extends StatelessWidget {
       repeatDelay: config.effectiveRepeatDelay,
       direction: config.direction,
       enabled: config.enabled,
+      borderRadius: config.borderRadius,
+      highlightOpacity: config.highlightOpacity,
+      highlightWidth: config.highlightWidth,
       child: child,
     );
   }

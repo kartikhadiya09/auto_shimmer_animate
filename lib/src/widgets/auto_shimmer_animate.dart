@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../animation/auto_shimmer_scope.dart';
 import '../builders/shimmer_builder.dart';
 import '../builders/skeleton_builder.dart';
 import '../core/enums/auto_shimmer_direction.dart';
@@ -15,6 +16,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     required this.isLoading,
     required this.child,
     this.baseColor,
+    this.childBaseColor,
     this.highlightColor,
     this.duration,
     this.repeatDelay,
@@ -22,6 +24,9 @@ class AutoShimmerAnimate extends StatelessWidget {
     this.borderRadius,
     this.direction,
     this.enabled,
+    this.layeredSkeleton,
+    this.highlightOpacity,
+    this.highlightWidth,
     this.ignoreContainers = false,
     this.ignoreImages = false,
     this.ignoreTexts = false,
@@ -36,6 +41,9 @@ class AutoShimmerAnimate extends StatelessWidget {
 
   /// Overrides the skeleton shape color.
   final Color? baseColor;
+
+  /// Overrides the child content skeleton color.
+  final Color? childBaseColor;
 
   /// Overrides the shimmer highlight color.
   final Color? highlightColor;
@@ -59,6 +67,15 @@ class AutoShimmerAnimate extends StatelessWidget {
   /// Overrides whether the shimmer animation should run.
   final bool? enabled;
 
+  /// Overrides whether parent and child skeleton layers use separate colors.
+  final bool? layeredSkeleton;
+
+  /// Overrides the opacity of the moving shimmer highlight.
+  final double? highlightOpacity;
+
+  /// Overrides the relative width of the moving shimmer highlight.
+  final double? highlightWidth;
+
   /// Leaves `Container`, `DecoratedBox`, and `Card` visuals unchanged.
   final bool ignoreContainers;
 
@@ -80,6 +97,7 @@ class AutoShimmerAnimate extends StatelessWidget {
 
     final config = ShimmerConfigBuilder(
       baseColor: baseColor,
+      childBaseColor: childBaseColor,
       highlightColor: highlightColor,
       duration: duration,
       repeatDelay: repeatDelay,
@@ -87,10 +105,16 @@ class AutoShimmerAnimate extends StatelessWidget {
       borderRadius: borderRadius,
       direction: direction,
       enabled: enabled,
+      layeredSkeleton: layeredSkeleton,
+      highlightOpacity: highlightOpacity,
+      highlightWidth: highlightWidth,
     ).build(context);
+    final skeletonConfig = shimmerBuilder == null
+        ? config
+        : config.copyWith(perElementShimmer: false);
 
     final skeleton = SkeletonBuilder(
-      config: config,
+      config: skeletonConfig,
       ignoreContainers: ignoreContainers,
       ignoreImages: ignoreImages,
       ignoreTexts: ignoreTexts,
@@ -98,7 +122,10 @@ class AutoShimmerAnimate extends StatelessWidget {
     );
 
     final shimmer = shimmerBuilder?.call(context, skeleton, config) ??
-        ShimmerWrapper(config: config, child: skeleton);
+        ShimmerWrapper(
+          config: config,
+          child: AutoShimmerScope(config: skeletonConfig, child: skeleton),
+        );
 
     return ExcludeSemantics(child: IgnorePointer(child: shimmer));
   }

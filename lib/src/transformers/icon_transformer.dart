@@ -46,6 +46,7 @@ class IconSkeleton extends StatelessWidget {
       dimension: resolvedSize,
       child: SkeletonBox(
         config: this.context.config,
+        color: this.context.contentColor,
         shape: BoxShape.circle,
       ),
     );

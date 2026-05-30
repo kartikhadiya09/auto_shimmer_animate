@@ -9,6 +9,7 @@ class ShimmerConfigBuilder {
   /// Creates a config builder.
   const ShimmerConfigBuilder({
     this.baseColor,
+    this.childBaseColor,
     this.highlightColor,
     this.duration,
     this.repeatDelay,
@@ -16,10 +17,16 @@ class ShimmerConfigBuilder {
     this.borderRadius,
     this.direction,
     this.enabled,
+    this.layeredSkeleton,
+    this.highlightOpacity,
+    this.highlightWidth,
   });
 
   /// Optional base color override.
   final Color? baseColor;
+
+  /// Optional child content color override.
+  final Color? childBaseColor;
 
   /// Optional highlight color override.
   final Color? highlightColor;
@@ -43,10 +50,20 @@ class ShimmerConfigBuilder {
   /// Optional animation enabled override.
   final bool? enabled;
 
+  /// Optional layered rendering override.
+  final bool? layeredSkeleton;
+
+  /// Optional highlight opacity override.
+  final double? highlightOpacity;
+
+  /// Optional highlight width override.
+  final double? highlightWidth;
+
   /// Resolves the final config for [context].
   AutoShimmerConfig build(BuildContext context) {
     return AutoShimmerTheme.of(context).copyWith(
       baseColor: baseColor,
+      childBaseColor: childBaseColor,
       highlightColor: highlightColor,
       duration: duration,
       repeatDelay: repeatDelay,
@@ -54,6 +71,9 @@ class ShimmerConfigBuilder {
       borderRadius: borderRadius,
       direction: direction,
       enabled: enabled,
+      layeredSkeleton: layeredSkeleton,
+      highlightOpacity: highlightOpacity,
+      highlightWidth: highlightWidth,
     );
   }
 }

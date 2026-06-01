@@ -1,5 +1,8 @@
-/// Direction used by the built-in shimmer animation.
+/// Direction used by the shimmer animation.
 enum AutoShimmerDirection {
+  /// Shimmer travels diagonally from left top to right bottom.
+  leftTopToRightBottom,
+
   /// Shimmer travels from left to right.
   leftToRight,
 

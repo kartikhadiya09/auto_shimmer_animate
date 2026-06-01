@@ -11,21 +11,22 @@ into animated shimmer skeleton loaders without creating separate placeholder UI.
 Supports Null Safety
 
 Wrap your real UI once and let the package render a shimmer skeleton while data
-is loading. The default colors, timing, layered skeleton rendering, and shimmer
-animation are built in, so most screens do not need any custom configuration.
+is loading. The shimmer animation is powered internally by
+[`shimmer_animation`](https://pub.dev/packages/shimmer_animation), and default
+colors automatically adapt to light and dark themes.
+By default, shimmer color, opacity, speed, and angle follow
+`shimmer_animation` defaults.
 
 ## Features
 
 - Automatic shimmer skeleton generation
-- Layered parent and child skeleton colors
-- Production-friendly default colors
-- Synchronized per-element shimmer animation
 - No duplicate loading UI
+- Theme-aware light and dark shimmer colors
 - State-based shimmer support
-- Custom shimmer builder
+- Custom loading UI builder
+- Custom shimmer animation builder
 - Global shimmer theme
-- Built-in shimmer engine
-- No third-party shimmer dependency
+- Uses `shimmer_animation` internally
 - Android, iOS, Web, Windows, macOS, Linux
 
 ## Preview
@@ -36,7 +37,7 @@ animation are built in, so most screens do not need any custom configuration.
 
 ```yaml
 dependencies:
-  auto_shimmer_animate: ^0.1.0
+  auto_shimmer_animate: ^0.1.1
 ```
 
 ```sh
@@ -51,7 +52,7 @@ import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 
 ## Usage
 
-### Basic Usage
+### Basic Auto Shimmer
 
 ```dart
 AutoShimmerAnimate(
@@ -60,94 +61,81 @@ AutoShimmerAnimate(
 )
 ```
 
-No color is required by default. Color and animation parameters are optional;
-when you do not pass them, the package uses its internal defaults or the nearest
-`AutoShimmerTheme`.
+The package automatically generates a skeleton from your widget tree with soft
+default colors and a subtle shimmer effect.
 
-### Default Visuals
-
-| Setting | Default |
-|---------|---------|
-| `baseColor` | `Color(0xFFE5E7EB)` |
-| `childBaseColor` | `Color(0xFFDADDE3)` |
-| `highlightColor` | `Color(0xFFF2F4F7)` |
-| `highlightOpacity` | `0.35` |
-| `highlightWidth` | `0.12` |
-| `duration` | `Duration(milliseconds: 1600)` |
-| `repeatDelay` | `Duration.zero` |
-
-### Optional Colors
+### Custom Skeleton Colors
 
 ```dart
 AutoShimmerAnimate(
-  isLoading: true,
+  isLoading: isLoading,
   baseColor: Colors.grey.shade300,
   highlightColor: Colors.grey.shade100,
   child: ProductCard(),
 )
 ```
 
-### Layered Skeleton Colors
+- **baseColor**: Skeleton shape color (parent surfaces)
+- **highlightColor**: Moving shimmer highlight color
+- **childBaseColor**: Skeleton color for child content (when layeredSkeleton is enabled)
 
-```dart
-AutoShimmerAnimate(
-  isLoading: true,
-  baseColor: Colors.grey.shade200,
-  childBaseColor: Colors.grey.shade300,
-  highlightColor: Colors.grey.shade100,
-  child: ProductCard(),
-)
-```
-
-Layered rendering is enabled by default. Parent surfaces such as `Card` and
-`Container` use `baseColor`; child content such as `Text`, `Image`, and `Icon`
-uses `childBaseColor`.
-
-### Flat Skeleton Style
-
-```dart
-AutoShimmerAnimate(
-  isLoading: true,
-  layeredSkeleton: false,
-  child: ProductCard(),
-)
-```
-
-### Custom Timing
+### Layered Skeleton
 
 ```dart
 AutoShimmerAnimate(
   isLoading: isLoading,
-  duration: const Duration(milliseconds: 1200),
-  repeatDelay: const Duration(milliseconds: 100),
+  baseColor: Colors.grey.shade300,
+  childBaseColor: Colors.grey.shade400,
+  layeredSkeleton: true,
   child: ProductCard(),
 )
 ```
 
-### Shimmer Tuning
+Separates the skeleton color for container surfaces and content elements for
+better visual hierarchy.
 
-```dart
-AutoShimmerAnimate(
-  isLoading: true,
-  highlightOpacity: 0.35,
-  highlightWidth: 0.12,
-  child: ProductCard(),
-)
-```
-
-The built-in shimmer engine uses per-element clipping with a shared animation
-scope. That keeps rounded skeleton shapes clean while the shimmer movement stays
-aligned across the loading layout.
-
-### Custom Direction
+### Custom Loading UI
 
 ```dart
 AutoShimmerAnimate(
   isLoading: isLoading,
-  direction: AutoShimmerDirection.rightToLeft,
+  loadingBuilder: (context, _, config) {
+    return Container(
+      height: 100,
+      color: config.baseColor,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  },
   child: ProductCard(),
 )
 ```
+
+When `loadingBuilder` is provided, the package skips automatic skeleton
+generation and uses your custom loading UI instead. The shimmer animation is
+still applied.
+
+### Custom Shimmer Animation
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  shimmerBuilder: (context, skeleton, config) {
+    return Shimmer(
+      color: config.highlightColor,
+      duration: config.duration,
+      interval: config.repeatDelay,
+      enabled: config.enabled,
+      child: skeleton,
+    );
+  },
+  child: ProductCard(),
+)
+```
+
+Use `shimmerBuilder` to customize how the shimmer animation wraps the generated
+skeleton. Only used when `loadingBuilder` is not provided.
 
 ### State-Based Usage
 
@@ -163,7 +151,10 @@ AutoShimmerStateAnimate<ViewStatus>(
 
 ```dart
 AutoShimmerTheme(
-  data: const AutoShimmerConfig(),
+  data: const AutoShimmerConfig(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+  ),
   child: MyApp(),
 )
 ```
@@ -173,10 +164,28 @@ AutoShimmerTheme(
 | API | Description |
 |------|-------------|
 | `AutoShimmerAnimate` | Automatically transforms widgets into shimmer skeletons |
-| `AutoShimmerStateAnimate<T>` | State driven shimmer wrapper |
+| `AutoShimmerStateAnimate<T>` | State-driven shimmer wrapper |
 | `AutoShimmerTheme` | Provides global shimmer configuration |
-| `AutoShimmerConfig` | Controls optional colors, animation and layered rendering |
+| `AutoShimmerConfig` | Controls shimmer appearance and behavior |
 | `AutoShimmerDirection` | Controls shimmer sweep direction |
+
+## Parameters
+
+| Parameter | Type | Default  | Description |
+|-----------|------|----------|-------------|
+| isLoading | bool | required | Show skeleton when true |
+| child | Widget | required | Widget to skeletonize |
+| baseColor | Color? | -        | Skeleton base color |
+| childBaseColor | Color? | -        | Child content skeleton color |
+| highlightColor | Color? | -        | Shimmer highlight color |
+| loadingBuilder | AutoShimmerBuilder? | -        | Custom loading UI (skips auto-skeleton) |
+| shimmerBuilder | AutoShimmerBuilder? | -        | Custom shimmer animation wrapper |
+| duration | Duration? | 3s       | Shimmer sweep duration |
+| repeatDelay | Duration? | 0ms      | Delay between sweeps |
+| borderRadius | BorderRadius? | 8px      | Skeleton border radius |
+| layeredSkeleton | bool? | true     | Separate colors for parent/child |
+| highlightOpacity | double? | 0.8      | Shimmer highlight opacity |
+| highlightWidth | double? | 0.12     | Shimmer highlight width |
 
 ## Example
 
@@ -190,13 +199,8 @@ See the `example/` directory for a complete runnable Flutter app.
 
 ## Additional Information
 
-No third-party shimmer dependency is required. The package includes its own
-lightweight shimmer animation engine built with Flutter animation primitives.
-
 The package automatically transforms common Flutter widgets and gracefully
-falls back for unsupported custom widgets. For the best layered skeleton output,
-build loading layouts from normal Flutter widgets such as `Card`, `Container`,
-`Row`, `Column`, `Text`, `Image`, `Icon`, and `ListTile`.
+falls back for unsupported custom widgets.
 
 ## License
 

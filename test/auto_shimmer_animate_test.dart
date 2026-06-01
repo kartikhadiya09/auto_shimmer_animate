@@ -2,7 +2,6 @@ import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:auto_shimmer_animate/src/animation/auto_shimmer_effect.dart';
 import 'package:auto_shimmer_animate/src/core/utils/skeleton_box.dart';
 
 enum TestStatus { initial, loading, loaded }
@@ -32,7 +31,7 @@ void main() {
     );
 
     expect(find.text('Loaded content'), findsNothing);
-    expect(find.byType(AutoShimmerEffect), findsOneWidget);
+    expect(find.byType(Shimmer), findsOneWidget);
   });
 
   testWidgets('supports childBaseColor customization', (tester) async {
@@ -97,7 +96,7 @@ void main() {
 
     expect(boxes.any((box) => box.color == Colors.black12), isTrue);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
-    expect(find.byType(AutoShimmerEffect).evaluate().length, greaterThan(1));
+    expect(find.byType(Shimmer), findsOneWidget);
   });
 
   testWidgets('card with child keeps child skeleton visible', (tester) async {
@@ -185,10 +184,10 @@ void main() {
     );
 
     expect(find.text('Profile content'), findsNothing);
-    expect(find.byType(AutoShimmerEffect), findsOneWidget);
+    expect(find.byType(Shimmer), findsOneWidget);
   });
 
-  testWidgets('uses custom shimmer builder', (tester) async {
+  testWidgets('shimmerBuilder wraps generated skeleton', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: AutoShimmerAnimate(
@@ -196,14 +195,55 @@ void main() {
           shimmerBuilder: (context, child, config) {
             return ColoredBox(color: config.baseColor, child: child);
           },
-          child: const Text('Custom builder content'),
+          child: const Text('Shimmer builder content'),
         ),
       ),
     );
 
-    expect(find.text('Custom builder content'), findsNothing);
-    expect(find.byType(AutoShimmerEffect), findsNothing);
+    expect(find.text('Shimmer builder content'), findsNothing);
+    expect(find.byType(Shimmer), findsNothing);
     expect(find.byType(ColoredBox), findsWidgets);
+    expect(find.byType(SkeletonBox), findsWidgets);
+  });
+
+  testWidgets('loadingBuilder skips auto-skeleton generation', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          loadingBuilder: (context, _, config) {
+            return Container(
+              width: 100,
+              height: 20,
+              color: config.baseColor,
+            );
+          },
+          child: const Text('Custom loading UI'),
+        ),
+      ),
+    );
+
+    expect(find.text('Custom loading UI'), findsNothing);
+    expect(find.byType(SkeletonBox), findsNothing);
+    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Shimmer), findsOneWidget);
+  });
+
+  testWidgets('loadingBuilder ignored when isLoading is false', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: false,
+          loadingBuilder: (context, _, config) {
+            return const Text('Should not appear');
+          },
+          child: const Text('Original child'),
+        ),
+      ),
+    );
+
+    expect(find.text('Original child'), findsOneWidget);
+    expect(find.text('Should not appear'), findsNothing);
   });
 
   testWidgets('accepts repeatDelay', (tester) async {
@@ -217,11 +257,9 @@ void main() {
       ),
     );
 
-    final effect = tester.widget<AutoShimmerEffect>(
-      find.byType(AutoShimmerEffect),
-    );
+    final effect = tester.widget<Shimmer>(find.byType(Shimmer));
 
-    expect(effect.repeatDelay, const Duration(milliseconds: 100));
+    expect(effect.interval, const Duration(milliseconds: 100));
   });
 
   testWidgets('enabled false keeps generated skeleton without animation',
@@ -236,9 +274,7 @@ void main() {
       ),
     );
 
-    final effect = tester.widget<AutoShimmerEffect>(
-      find.byType(AutoShimmerEffect),
-    );
+    final effect = tester.widget<Shimmer>(find.byType(Shimmer));
 
     expect(effect.enabled, isFalse);
     expect(find.text('Disabled shimmer'), findsNothing);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/constants/auto_shimmer_colors.dart';
 import '../core/constants/auto_shimmer_defaults.dart';
 import '../core/enums/auto_shimmer_direction.dart';
 
@@ -40,7 +41,32 @@ class AutoShimmerConfig {
             perElementShimmer ?? AutoShimmerDefaults.perElementShimmer,
         highlightOpacity =
             highlightOpacity ?? AutoShimmerDefaults.highlightOpacity,
-        highlightWidth = highlightWidth ?? AutoShimmerDefaults.highlightWidth;
+        highlightWidth = highlightWidth ?? AutoShimmerDefaults.highlightWidth,
+        _hasShimmerAnimationOverrides = highlightColor != null ||
+            duration != null ||
+            repeatDelay != null ||
+            interval != null ||
+            direction != null ||
+            enabled != null ||
+            highlightOpacity != null;
+
+  const AutoShimmerConfig._({
+    required this.baseColor,
+    required this.childBaseColor,
+    required this.highlightColor,
+    required this.duration,
+    required Duration? repeatDelay,
+    required this.interval,
+    required this.borderRadius,
+    required this.direction,
+    required this.enabled,
+    required this.layeredSkeleton,
+    required this.perElementShimmer,
+    required this.highlightOpacity,
+    required this.highlightWidth,
+    required bool hasShimmerAnimationOverrides,
+  })  : _repeatDelay = repeatDelay,
+        _hasShimmerAnimationOverrides = hasShimmerAnimationOverrides;
 
   /// Color used to paint generated skeleton shapes.
   final Color baseColor;
@@ -87,11 +113,30 @@ class AutoShimmerConfig {
   /// Relative width used for the moving shimmer highlight.
   final double highlightWidth;
 
+  final bool _hasShimmerAnimationOverrides;
+
+  /// Creates default colors that match the current Flutter light/dark theme.
+  factory AutoShimmerConfig.adaptive(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
+    if (brightness == Brightness.dark) {
+      return const AutoShimmerConfig(
+        baseColor: AutoShimmerColors.darkBase,
+        childBaseColor: AutoShimmerColors.darkChildBase,
+      );
+    }
+
+    return const AutoShimmerConfig();
+  }
+
   /// Color used for parent surfaces such as cards and containers.
   Color get surfaceColor => baseColor;
 
   /// Color used for child content such as text, images and icons.
   Color get contentColor => layeredSkeleton ? childBaseColor : baseColor;
+
+  /// Whether shimmer animation parameters were explicitly configured.
+  bool get hasShimmerAnimationOverrides => _hasShimmerAnimationOverrides;
 
   /// Returns a copy of this config with the provided values replaced.
   AutoShimmerConfig copyWith({
@@ -109,13 +154,12 @@ class AutoShimmerConfig {
     double? highlightOpacity,
     double? highlightWidth,
   }) {
-    return AutoShimmerConfig(
+    return AutoShimmerConfig._(
       baseColor: baseColor ?? this.baseColor,
       childBaseColor: childBaseColor ?? this.childBaseColor,
       highlightColor: highlightColor ?? this.highlightColor,
       duration: duration ?? this.duration,
       repeatDelay: repeatDelay ?? _repeatDelay,
-      // ignore: deprecated_member_use_from_same_package
       interval: interval ?? this.interval,
       borderRadius: borderRadius ?? this.borderRadius,
       direction: direction ?? this.direction,
@@ -124,6 +168,14 @@ class AutoShimmerConfig {
       perElementShimmer: perElementShimmer ?? this.perElementShimmer,
       highlightOpacity: highlightOpacity ?? this.highlightOpacity,
       highlightWidth: highlightWidth ?? this.highlightWidth,
+      hasShimmerAnimationOverrides: _hasShimmerAnimationOverrides ||
+          highlightColor != null ||
+          duration != null ||
+          repeatDelay != null ||
+          interval != null ||
+          direction != null ||
+          enabled != null ||
+          highlightOpacity != null,
     );
   }
 
@@ -142,7 +194,9 @@ class AutoShimmerConfig {
             other.layeredSkeleton == layeredSkeleton &&
             other.perElementShimmer == perElementShimmer &&
             other.highlightOpacity == highlightOpacity &&
-            other.highlightWidth == highlightWidth;
+            other.highlightWidth == highlightWidth &&
+            other._hasShimmerAnimationOverrides ==
+                _hasShimmerAnimationOverrides;
   }
 
   @override
@@ -160,6 +214,7 @@ class AutoShimmerConfig {
       perElementShimmer,
       highlightOpacity,
       highlightWidth,
+      _hasShimmerAnimationOverrides,
     );
   }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1
+
+- Fixed default shimmer highlight to use soft light grey instead of harsh pure white.
+- Reduced default highlight width for more subtle shimmer animation.
+- Added `loadingBuilder` parameter for custom loading UI (skips auto-skeleton generation).
+- Clarified `shimmerBuilder` usage: wraps generated skeleton with custom animation only.
+- Improved color behavior: user-provided colors are always respected exactly.
+- Updated README with custom loading UI and shimmer animation builder examples.
+
+
+
 ## 0.1.0
 
 - Added layered skeleton rendering.

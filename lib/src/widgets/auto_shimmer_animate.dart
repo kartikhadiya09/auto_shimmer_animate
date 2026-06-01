@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../animation/auto_shimmer_scope.dart';
 import '../builders/shimmer_builder.dart';
 import '../builders/skeleton_builder.dart';
 import '../core/enums/auto_shimmer_direction.dart';
@@ -30,6 +29,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     this.ignoreContainers = false,
     this.ignoreImages = false,
     this.ignoreTexts = false,
+    this.loadingBuilder,
     this.shimmerBuilder,
   });
 
@@ -86,7 +86,18 @@ class AutoShimmerAnimate extends StatelessWidget {
   /// with bars.
   final bool ignoreTexts;
 
+  /// Optional custom builder for the loading UI.
+  ///
+  /// When provided, skips automatic skeleton generation and uses the custom UI.
+  /// The returned widget will be wrapped with shimmer animation if needed.
+  /// When [isLoading] is false, the original [child] is always shown.
+  final AutoShimmerBuilder? loadingBuilder;
+
   /// Optional custom builder for applying shimmer to the generated skeleton.
+  ///
+  /// When provided, customizes how the shimmer animation wraps the generated
+  /// skeleton. Only used when [loadingBuilder] is not provided.
+  /// Ignored when [loadingBuilder] is specified.
   final AutoShimmerBuilder? shimmerBuilder;
 
   @override
@@ -109,12 +120,18 @@ class AutoShimmerAnimate extends StatelessWidget {
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,
     ).build(context);
-    final skeletonConfig = shimmerBuilder == null
-        ? config
-        : config.copyWith(perElementShimmer: false);
 
+    // Use custom loading builder if provided (skips auto-skeleton generation)
+    if (loadingBuilder != null) {
+      final customLoadingUI =
+          loadingBuilder!(context, SizedBox.shrink(), config);
+      final shimmer = ShimmerWrapper(config: config, child: customLoadingUI);
+      return ExcludeSemantics(child: IgnorePointer(child: shimmer));
+    }
+
+    // Auto-generate skeleton and optionally wrap with custom shimmer builder
     final skeleton = SkeletonBuilder(
-      config: skeletonConfig,
+      config: config,
       ignoreContainers: ignoreContainers,
       ignoreImages: ignoreImages,
       ignoreTexts: ignoreTexts,
@@ -122,10 +139,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     );
 
     final shimmer = shimmerBuilder?.call(context, skeleton, config) ??
-        ShimmerWrapper(
-          config: config,
-          child: AutoShimmerScope(config: skeletonConfig, child: skeleton),
-        );
+        ShimmerWrapper(config: config, child: skeleton);
 
     return ExcludeSemantics(child: IgnorePointer(child: shimmer));
   }

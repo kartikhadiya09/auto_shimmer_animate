@@ -1,6 +1,6 @@
 name: auto_shimmer_animate
 description: A Flutter package that automatically converts existing widget trees into animated shimmer skeleton loading states.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/kartikhadiya09/auto_shimmer_animate
 repository: https://github.com/kartikhadiya09/auto_shimmer_animate
 issue_tracker: https://github.com/kartikhadiya09/auto_shimmer_animate/issues
@@ -24,6 +24,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shimmer_animation: ^2.2.2+1
 
 dev_dependencies:
   flutter_lints: ^6.0.0

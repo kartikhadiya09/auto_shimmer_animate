@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../animation/auto_shimmer_effect.dart';
 import '../config/auto_shimmer_config.dart';
+import '../core/extensions/shimmer_direction_extension.dart';
 
-/// Default adapter between generated skeletons and the built-in shimmer engine.
+/// Default adapter between generated skeletons and `shimmer_animation`.
 class ShimmerWrapper extends StatelessWidget {
   /// Creates the default shimmer wrapper.
   const ShimmerWrapper({
@@ -20,20 +21,17 @@ class ShimmerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (config.layeredSkeleton && config.perElementShimmer) {
-      return child;
+    if (!config.hasShimmerAnimationOverrides) {
+      return Shimmer(child: child);
     }
 
-    return AutoShimmerEffect(
-      baseColor: config.baseColor,
-      highlightColor: config.highlightColor,
+    return Shimmer(
+      color: config.highlightColor,
+      colorOpacity: config.highlightOpacity,
       duration: config.duration,
-      repeatDelay: config.effectiveRepeatDelay,
-      direction: config.direction,
+      interval: config.effectiveRepeatDelay,
+      direction: config.direction.toShimmerDirection(),
       enabled: config.enabled,
-      borderRadius: config.borderRadius,
-      highlightOpacity: config.highlightOpacity,
-      highlightWidth: config.highlightWidth,
       child: child,
     );
   }

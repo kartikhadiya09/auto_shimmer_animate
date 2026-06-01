@@ -15,7 +15,7 @@ abstract final class AutoShimmerDefaults {
   static const highlightColor = AutoShimmerColors.highlight;
 
   /// Default shimmer sweep duration.
-  static const duration = Duration(milliseconds: 1600);
+  static const duration = Duration(seconds: 3);
 
   /// Default delay between shimmer sweeps.
   @Deprecated('Use repeatDelay instead.')
@@ -28,7 +28,7 @@ abstract final class AutoShimmerDefaults {
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   /// Default shimmer sweep direction.
-  static const direction = AutoShimmerDirection.leftToRight;
+  static const direction = AutoShimmerDirection.leftTopToRightBottom;
 
   /// Default shimmer animation state.
   static const enabled = true;
@@ -40,7 +40,7 @@ abstract final class AutoShimmerDefaults {
   static const perElementShimmer = true;
 
   /// Default shimmer highlight opacity.
-  static const highlightOpacity = 0.35;
+  static const highlightOpacity = 0.3;
 
   /// Default shimmer highlight width.
   static const highlightWidth = 0.12;

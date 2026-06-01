@@ -19,10 +19,12 @@ class AutoShimmerTheme extends InheritedWidget {
 
   /// Returns the nearest [AutoShimmerConfig], or the package defaults.
   static AutoShimmerConfig of(BuildContext context) {
-    return context
-            .dependOnInheritedWidgetOfExactType<AutoShimmerTheme>()
-            ?.data ??
-        const AutoShimmerConfig();
+    return maybeOf(context) ?? AutoShimmerConfig.adaptive(context);
+  }
+
+  /// Returns the nearest [AutoShimmerConfig], if one exists.
+  static AutoShimmerConfig? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<AutoShimmerTheme>()?.data;
   }
 
   @override

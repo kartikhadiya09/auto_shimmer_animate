@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1
+
+- Restored `shimmer_animation` as the internal shimmer animation engine.
+- Added theme-aware default shimmer colors for light and dark mode.
+- Aligned default shimmer color, opacity, speed and angle with `shimmer_animation`.
+- Updated README examples and package documentation for the new defaults.
+
+
 ## 0.1.0
 
 - Added layered skeleton rendering.

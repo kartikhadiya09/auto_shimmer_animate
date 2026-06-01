@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../animation/auto_shimmer_effect.dart';
-import '../../animation/auto_shimmer_scope.dart';
 import '../../config/auto_shimmer_config.dart';
 
 /// Reusable generated skeleton shape.
@@ -29,34 +27,15 @@ class SkeletonBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scopedConfig = AutoShimmerScope.configOf(context);
-    final effectiveConfig = scopedConfig ?? config;
-    final resolvedColor = color ?? effectiveConfig.contentColor;
-    final radius = shape == BoxShape.circle
-        ? null
-        : borderRadius ?? effectiveConfig.borderRadius;
+    final resolvedColor = color ?? config.contentColor;
+    final radius =
+        shape == BoxShape.circle ? null : borderRadius ?? config.borderRadius;
     final decoration = BoxDecoration(
       color: resolvedColor,
       borderRadius: radius,
       shape: shape,
     );
     Widget box = DecoratedBox(decoration: decoration);
-
-    if (effectiveConfig.layeredSkeleton && effectiveConfig.perElementShimmer) {
-      box = AutoShimmerEffect(
-        baseColor: resolvedColor,
-        highlightColor: effectiveConfig.highlightColor,
-        duration: effectiveConfig.duration,
-        repeatDelay: effectiveConfig.effectiveRepeatDelay,
-        direction: effectiveConfig.direction,
-        enabled: effectiveConfig.enabled,
-        borderRadius: radius is BorderRadius ? radius : null,
-        animation: AutoShimmerScope.animationOf(context),
-        highlightOpacity: effectiveConfig.highlightOpacity,
-        highlightWidth: effectiveConfig.highlightWidth,
-        child: box,
-      );
-    }
 
     if (shape == BoxShape.circle) {
       return ClipOval(child: box);

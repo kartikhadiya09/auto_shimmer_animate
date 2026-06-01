@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../animation/auto_shimmer_scope.dart';
 import '../builders/shimmer_builder.dart';
 import '../builders/skeleton_builder.dart';
 import '../core/enums/auto_shimmer_direction.dart';
@@ -109,12 +108,8 @@ class AutoShimmerAnimate extends StatelessWidget {
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,
     ).build(context);
-    final skeletonConfig = shimmerBuilder == null
-        ? config
-        : config.copyWith(perElementShimmer: false);
-
     final skeleton = SkeletonBuilder(
-      config: skeletonConfig,
+      config: config,
       ignoreContainers: ignoreContainers,
       ignoreImages: ignoreImages,
       ignoreTexts: ignoreTexts,
@@ -122,10 +117,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     );
 
     final shimmer = shimmerBuilder?.call(context, skeleton, config) ??
-        ShimmerWrapper(
-          config: config,
-          child: AutoShimmerScope(config: skeletonConfig, child: skeleton),
-        );
+        ShimmerWrapper(config: config, child: skeleton);
 
     return ExcludeSemantics(child: IgnorePointer(child: shimmer));
   }

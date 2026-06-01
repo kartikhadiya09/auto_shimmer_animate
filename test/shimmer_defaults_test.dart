@@ -22,7 +22,7 @@ void main() {
     expect(box.config.surfaceColor, const Color(0xFFE5E7EB));
     expect(box.config.contentColor, const Color(0xFFDADDE3));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
-    expect(shimmer.color, const Color(0xFFFFFFFF));
+    expect(shimmer.color, const Color(0xFFFAFAFA));
     expect(shimmer.colorOpacity, 0.3);
     expect(shimmer.duration, const Duration(seconds: 3));
   });
@@ -44,7 +44,7 @@ void main() {
     expect(box.config.surfaceColor, const Color(0xFF2A2F3A));
     expect(box.config.contentColor, const Color(0xFF3A404C));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
-    expect(shimmer.color, const Color(0xFFFFFFFF));
+    expect(shimmer.color, const Color(0xFFFAFAFA));
     expect(shimmer.colorOpacity, 0.3);
   });
 
@@ -66,7 +66,7 @@ void main() {
 
     expect(config.baseColor, const Color(0xFFE5E7EB));
     expect(config.childBaseColor, const Color(0xFFDADDE3));
-    expect(config.highlightColor, const Color(0xFFFFFFFF));
+    expect(config.highlightColor, const Color(0xFFFAFAFA));
     expect(config.duration, const Duration(seconds: 3));
     expect(config.effectiveRepeatDelay, Duration.zero);
     expect(config.direction, AutoShimmerDirection.leftTopToRightBottom);
@@ -74,7 +74,7 @@ void main() {
     expect(config.layeredSkeleton, isTrue);
     expect(config.perElementShimmer, isTrue);
     expect(config.highlightOpacity, 0.3);
-    expect(config.highlightWidth, 0.12);
+    expect(config.highlightWidth, 0.08);
     expect(config.hasShimmerAnimationOverrides, isFalse);
   });
 
@@ -103,5 +103,71 @@ void main() {
     const config = AutoShimmerConfig(duration: Duration(milliseconds: 900));
 
     expect(config.hasShimmerAnimationOverrides, isTrue);
+  });
+
+  testWidgets('user-provided baseColor is used exactly', (tester) async {
+    const customColor = Color(0xFF123456);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          baseColor: customColor,
+          child: Text('Custom base color'),
+        ),
+      ),
+    );
+
+    final config =
+        tester.widget<SkeletonBox>(find.byType(SkeletonBox).first).config;
+    expect(config.baseColor, customColor);
+  });
+
+  testWidgets('user-provided highlightColor is used exactly', (tester) async {
+    const customColor = Color(0xFFABCDEF);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          highlightColor: customColor,
+          child: Text('Custom highlight color'),
+        ),
+      ),
+    );
+
+    final shimmer = tester.widget<Shimmer>(find.byType(Shimmer));
+    expect(shimmer.color, customColor);
+  });
+
+  testWidgets('user-provided childBaseColor is used exactly', (tester) async {
+    const customColor = Color(0xFF654321);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          childBaseColor: customColor,
+          child: Text('Custom child base color'),
+        ),
+      ),
+    );
+
+    final config =
+        tester.widget<SkeletonBox>(find.byType(SkeletonBox).first).config;
+    expect(config.childBaseColor, customColor);
+  });
+
+  testWidgets('default highlight width is reduced for subtle shimmer',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          child: Text('Subtle shimmer'),
+        ),
+      ),
+    );
+
+    final config =
+        tester.widget<SkeletonBox>(find.byType(SkeletonBox).first).config;
+    expect(config.highlightWidth, 0.08);
   });
 }

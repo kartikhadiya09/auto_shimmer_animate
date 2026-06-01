@@ -187,7 +187,7 @@ void main() {
     expect(find.byType(Shimmer), findsOneWidget);
   });
 
-  testWidgets('uses custom shimmer builder', (tester) async {
+  testWidgets('shimmerBuilder wraps generated skeleton', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: AutoShimmerAnimate(
@@ -195,14 +195,55 @@ void main() {
           shimmerBuilder: (context, child, config) {
             return ColoredBox(color: config.baseColor, child: child);
           },
-          child: const Text('Custom builder content'),
+          child: const Text('Shimmer builder content'),
         ),
       ),
     );
 
-    expect(find.text('Custom builder content'), findsNothing);
+    expect(find.text('Shimmer builder content'), findsNothing);
     expect(find.byType(Shimmer), findsNothing);
     expect(find.byType(ColoredBox), findsWidgets);
+    expect(find.byType(SkeletonBox), findsWidgets);
+  });
+
+  testWidgets('loadingBuilder skips auto-skeleton generation', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          loadingBuilder: (context, _, config) {
+            return Container(
+              width: 100,
+              height: 20,
+              color: config.baseColor,
+            );
+          },
+          child: const Text('Custom loading UI'),
+        ),
+      ),
+    );
+
+    expect(find.text('Custom loading UI'), findsNothing);
+    expect(find.byType(SkeletonBox), findsNothing);
+    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Shimmer), findsOneWidget);
+  });
+
+  testWidgets('loadingBuilder ignored when isLoading is false', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: false,
+          loadingBuilder: (context, _, config) {
+            return const Text('Should not appear');
+          },
+          child: const Text('Original child'),
+        ),
+      ),
+    );
+
+    expect(find.text('Original child'), findsOneWidget);
+    expect(find.text('Should not appear'), findsNothing);
   });
 
   testWidgets('accepts repeatDelay', (tester) async {

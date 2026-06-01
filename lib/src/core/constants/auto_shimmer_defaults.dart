@@ -40,7 +40,7 @@ abstract final class AutoShimmerDefaults {
   static const perElementShimmer = true;
 
   /// Default shimmer highlight opacity.
-  static const highlightOpacity = 0.3;
+  static const highlightOpacity = 0.8;
 
   /// Default shimmer highlight width.
   static const highlightWidth = 0.12;

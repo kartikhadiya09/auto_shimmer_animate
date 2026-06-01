@@ -23,7 +23,8 @@ By default, shimmer color, opacity, speed, and angle follow
 - No duplicate loading UI
 - Theme-aware light and dark shimmer colors
 - State-based shimmer support
-- Custom shimmer builder
+- Custom loading UI builder
+- Custom shimmer animation builder
 - Global shimmer theme
 - Uses `shimmer_animation` internally
 - Android, iOS, Web, Windows, macOS, Linux
@@ -51,7 +52,7 @@ import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 
 ## Usage
 
-### Basic Usage
+### Basic Auto Shimmer
 
 ```dart
 AutoShimmerAnimate(
@@ -60,16 +61,81 @@ AutoShimmerAnimate(
 )
 ```
 
-### Custom Colors
+The package automatically generates a skeleton from your widget tree with soft
+default colors and a subtle shimmer effect.
+
+### Custom Skeleton Colors
 
 ```dart
 AutoShimmerAnimate(
-  isLoading: true,
+  isLoading: isLoading,
   baseColor: Colors.grey.shade300,
   highlightColor: Colors.grey.shade100,
   child: ProductCard(),
 )
 ```
+
+- **baseColor**: Skeleton shape color (parent surfaces)
+- **highlightColor**: Moving shimmer highlight color
+- **childBaseColor**: Skeleton color for child content (when layeredSkeleton is enabled)
+
+### Layered Skeleton
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  baseColor: Colors.grey.shade300,
+  childBaseColor: Colors.grey.shade400,
+  layeredSkeleton: true,
+  child: ProductCard(),
+)
+```
+
+Separates the skeleton color for container surfaces and content elements for
+better visual hierarchy.
+
+### Custom Loading UI
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  loadingBuilder: (context, _, config) {
+    return Container(
+      height: 100,
+      color: config.baseColor,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  },
+  child: ProductCard(),
+)
+```
+
+When `loadingBuilder` is provided, the package skips automatic skeleton
+generation and uses your custom loading UI instead. The shimmer animation is
+still applied.
+
+### Custom Shimmer Animation
+
+```dart
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  shimmerBuilder: (context, skeleton, config) {
+    return Shimmer(
+      color: config.highlightColor,
+      duration: config.duration,
+      interval: config.repeatDelay,
+      enabled: config.enabled,
+      child: skeleton,
+    );
+  },
+  child: ProductCard(),
+)
+```
+
+Use `shimmerBuilder` to customize how the shimmer animation wraps the generated
+skeleton. Only used when `loadingBuilder` is not provided.
 
 ### State-Based Usage
 
@@ -85,24 +151,11 @@ AutoShimmerStateAnimate<ViewStatus>(
 
 ```dart
 AutoShimmerTheme(
-  data: const AutoShimmerConfig(),
-  child: MyApp(),
-)
-```
-
-### Custom Builder
-
-```dart
-AutoShimmerAnimate(
-  isLoading: true,
-  shimmerBuilder: (context, child, config) => Shimmer(
-    color: config.highlightColor,
-    duration: config.duration,
-    interval: config.repeatDelay,
-    enabled: config.enabled,
-    child: child,
+  data: const AutoShimmerConfig(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
   ),
-  child: ProductCard(),
+  child: MyApp(),
 )
 ```
 
@@ -115,6 +168,24 @@ AutoShimmerAnimate(
 | `AutoShimmerTheme` | Provides global shimmer configuration |
 | `AutoShimmerConfig` | Controls shimmer appearance and behavior |
 | `AutoShimmerDirection` | Controls shimmer sweep direction |
+
+## Parameters
+
+| Parameter | Type | Default  | Description |
+|-----------|------|----------|-------------|
+| isLoading | bool | required | Show skeleton when true |
+| child | Widget | required | Widget to skeletonize |
+| baseColor | Color? | -        | Skeleton base color |
+| childBaseColor | Color? | -        | Child content skeleton color |
+| highlightColor | Color? | -        | Shimmer highlight color |
+| loadingBuilder | AutoShimmerBuilder? | -        | Custom loading UI (skips auto-skeleton) |
+| shimmerBuilder | AutoShimmerBuilder? | -        | Custom shimmer animation wrapper |
+| duration | Duration? | 3s       | Shimmer sweep duration |
+| repeatDelay | Duration? | 0ms      | Delay between sweeps |
+| borderRadius | BorderRadius? | 8px      | Skeleton border radius |
+| layeredSkeleton | bool? | true     | Separate colors for parent/child |
+| highlightOpacity | double? | 0.8      | Shimmer highlight opacity |
+| highlightWidth | double? | 0.12     | Shimmer highlight width |
 
 ## Example
 
@@ -133,4 +204,4 @@ falls back for unsupported custom widgets.
 
 ## License
 
-MIT License
+[MIT License](https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/LICENSE)

@@ -22,7 +22,11 @@ class ShimmerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!config.hasShimmerAnimationOverrides) {
-      return Shimmer(child: child);
+      return Shimmer(
+        color: config.highlightColor,
+        colorOpacity: config.highlightOpacity,
+        child: child,
+      );
     }
 
     return Shimmer(
@@ -36,3 +40,4 @@ class ShimmerWrapper extends StatelessWidget {
     );
   }
 }
+

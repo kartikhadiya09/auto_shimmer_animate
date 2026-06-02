@@ -15,7 +15,7 @@ abstract final class AutoShimmerDefaults {
   static const highlightColor = AutoShimmerColors.highlight;
 
   /// Default shimmer sweep duration.
-  static const duration = Duration(seconds: 3);
+  static const duration = Duration(milliseconds: 2000);
 
   /// Default delay between shimmer sweeps.
   @Deprecated('Use repeatDelay instead.')
@@ -40,8 +40,8 @@ abstract final class AutoShimmerDefaults {
   static const perElementShimmer = true;
 
   /// Default shimmer highlight opacity.
-  static const highlightOpacity = 0.8;
+  static const highlightOpacity = 1.0;
 
   /// Default shimmer highlight width.
-  static const highlightWidth = 0.12;
+  static const highlightWidth = 0.1;
 }

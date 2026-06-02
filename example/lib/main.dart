@@ -30,7 +30,7 @@ class _ExampleAppState extends State<ExampleApp> {
         useMaterial3: true,
       ),
       home: DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Auto Shimmer Animate'),
@@ -60,6 +60,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 Tab(text: 'Custom Colors'),
                 Tab(text: 'State Based'),
                 Tab(text: 'Custom Builder'),
+                Tab(text: 'Aurora'),
               ],
             ),
           ),
@@ -121,6 +122,18 @@ class _ExampleAppState extends State<ExampleApp> {
                   child: const ProductList(),
                 ),
               ),
+              _ExampleList(
+                header: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerAuroraEffect(),
+                  child: const FeaturedProductCard(),
+                ),
+                list: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerAuroraEffect(),
+                  child: const ProductList(),
+                ),
+              ),
             ],
           ),
         ),
@@ -134,10 +147,14 @@ Widget _softShimmerBuilder(
   Widget child,
   AutoShimmerConfig config,
 ) {
-  return Shimmer(
-    color: Colors.teal.shade50,
-    colorOpacity: 0.8,
-    duration: const Duration(milliseconds: 1400),
+  return AutoShimmerLayer(
+    config: config.copyWith(
+      effect: AutoShimmerSweepEffect(
+        highlightColor: Colors.teal.shade50,
+        highlightOpacity: 0.8,
+        duration: const Duration(milliseconds: 1400),
+      ),
+    ),
     child: child,
   );
 }

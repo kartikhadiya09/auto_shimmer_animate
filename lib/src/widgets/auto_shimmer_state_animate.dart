@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/enums/auto_shimmer_direction.dart';
 import '../core/typedefs/auto_shimmer_builder.dart';
+import '../effects/auto_shimmer_effect.dart';
 import 'auto_shimmer_animate.dart';
 
 /// State-driven variant of [AutoShimmerAnimate].
@@ -26,6 +27,7 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.effect,
     this.highlightOpacity,
     this.highlightWidth,
     this.ignoreContainers = false,
@@ -74,6 +76,9 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
   /// Overrides whether parent and child skeleton layers use separate colors.
   final bool? layeredSkeleton;
 
+  /// Overrides the default shimmer painting effect.
+  final AutoShimmerEffect? effect;
+
   /// Overrides the opacity of the moving shimmer highlight.
   final double? highlightOpacity;
 
@@ -107,6 +112,7 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      effect: effect,
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,
       ignoreContainers: ignoreContainers,

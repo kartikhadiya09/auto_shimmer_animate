@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../core/constants/auto_shimmer_colors.dart';
 import '../core/constants/auto_shimmer_defaults.dart';
 import '../core/enums/auto_shimmer_direction.dart';
+import '../core/extensions/shimmer_direction_extension.dart';
+import '../effects/auto_shimmer_effect.dart';
 
 /// Visual and animation settings used by `AutoShimmerAnimate`.
 ///
@@ -23,6 +25,7 @@ class AutoShimmerConfig {
     bool? enabled,
     bool? layeredSkeleton,
     bool? perElementShimmer,
+    AutoShimmerEffect? effect,
     double? highlightOpacity,
     double? highlightWidth,
   })  : baseColor = baseColor ?? AutoShimmerDefaults.baseColor,
@@ -42,13 +45,16 @@ class AutoShimmerConfig {
         highlightOpacity =
             highlightOpacity ?? AutoShimmerDefaults.highlightOpacity,
         highlightWidth = highlightWidth ?? AutoShimmerDefaults.highlightWidth,
+        effect = effect,
         _hasShimmerAnimationOverrides = highlightColor != null ||
             duration != null ||
             repeatDelay != null ||
             interval != null ||
             direction != null ||
             enabled != null ||
-            highlightOpacity != null;
+            effect != null ||
+            highlightOpacity != null ||
+            highlightWidth != null;
 
   const AutoShimmerConfig._({
     required this.baseColor,
@@ -62,6 +68,7 @@ class AutoShimmerConfig {
     required this.enabled,
     required this.layeredSkeleton,
     required this.perElementShimmer,
+    required this.effect,
     required this.highlightOpacity,
     required this.highlightWidth,
     required bool hasShimmerAnimationOverrides,
@@ -107,6 +114,9 @@ class AutoShimmerConfig {
   /// Whether individual skeleton elements animate independently.
   final bool perElementShimmer;
 
+  /// Optional custom effect used by the internal shimmer renderer.
+  final AutoShimmerEffect? effect;
+
   /// Opacity used for the moving shimmer highlight.
   final double highlightOpacity;
 
@@ -120,9 +130,22 @@ class AutoShimmerConfig {
     final brightness = Theme.of(context).brightness;
 
     if (brightness == Brightness.dark) {
-      return const AutoShimmerConfig(
+      return const AutoShimmerConfig._(
         baseColor: AutoShimmerColors.darkBase,
         childBaseColor: AutoShimmerColors.darkChildBase,
+        highlightColor: AutoShimmerColors.darkHighlight,
+        duration: AutoShimmerDefaults.duration,
+        repeatDelay: null,
+        interval: AutoShimmerDefaults.interval,
+        borderRadius: AutoShimmerDefaults.borderRadius,
+        direction: AutoShimmerDefaults.direction,
+        enabled: AutoShimmerDefaults.enabled,
+        layeredSkeleton: AutoShimmerDefaults.layeredSkeleton,
+        perElementShimmer: AutoShimmerDefaults.perElementShimmer,
+        effect: null,
+        highlightOpacity: AutoShimmerDefaults.highlightOpacity,
+        highlightWidth: AutoShimmerDefaults.highlightWidth,
+        hasShimmerAnimationOverrides: false,
       );
     }
 
@@ -138,6 +161,20 @@ class AutoShimmerConfig {
   /// Whether shimmer animation parameters were explicitly configured.
   bool get hasShimmerAnimationOverrides => _hasShimmerAnimationOverrides;
 
+  /// Effect resolved from either [effect] or the legacy color/direction fields.
+  AutoShimmerEffect get resolvedEffect {
+    return effect ??
+        AutoShimmerSweepEffect(
+          baseColor: baseColor,
+          highlightColor: highlightColor,
+          highlightOpacity: highlightOpacity,
+          highlightWidth: highlightWidth,
+          begin: direction.beginAlignment,
+          end: direction.endAlignment,
+          duration: duration,
+        );
+  }
+
   /// Returns a copy of this config with the provided values replaced.
   AutoShimmerConfig copyWith({
     Color? baseColor,
@@ -151,6 +188,7 @@ class AutoShimmerConfig {
     bool? enabled,
     bool? layeredSkeleton,
     bool? perElementShimmer,
+    AutoShimmerEffect? effect,
     double? highlightOpacity,
     double? highlightWidth,
   }) {
@@ -166,6 +204,7 @@ class AutoShimmerConfig {
       enabled: enabled ?? this.enabled,
       layeredSkeleton: layeredSkeleton ?? this.layeredSkeleton,
       perElementShimmer: perElementShimmer ?? this.perElementShimmer,
+      effect: effect ?? this.effect,
       highlightOpacity: highlightOpacity ?? this.highlightOpacity,
       highlightWidth: highlightWidth ?? this.highlightWidth,
       hasShimmerAnimationOverrides: _hasShimmerAnimationOverrides ||
@@ -175,7 +214,9 @@ class AutoShimmerConfig {
           interval != null ||
           direction != null ||
           enabled != null ||
-          highlightOpacity != null,
+          effect != null ||
+          highlightOpacity != null ||
+          highlightWidth != null,
     );
   }
 
@@ -193,6 +234,7 @@ class AutoShimmerConfig {
             other.enabled == enabled &&
             other.layeredSkeleton == layeredSkeleton &&
             other.perElementShimmer == perElementShimmer &&
+            other.effect == effect &&
             other.highlightOpacity == highlightOpacity &&
             other.highlightWidth == highlightWidth &&
             other._hasShimmerAnimationOverrides ==
@@ -212,6 +254,7 @@ class AutoShimmerConfig {
       enabled,
       layeredSkeleton,
       perElementShimmer,
+      effect,
       highlightOpacity,
       highlightWidth,
       _hasShimmerAnimationOverrides,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../builders/widget_transformer.dart';
+import '../config/auto_shimmer_config.dart';
 import '../core/enums/shimmer_node_kind.dart';
 import '../core/extensions/widget_transform_extensions.dart';
 import '../core/utils/skeleton_box.dart';
@@ -51,15 +52,48 @@ class CardAdapter implements WidgetTransformer {
       child: Stack(
         children: [
           Positioned.fill(
-            child: SkeletonBox(
+            child: _CardSurfaceSkeleton(
               config: transformContext.config,
               color: transformContext.surfaceColor,
+              shape: shape,
               borderRadius: borderRadius,
             ),
           ),
           if (child != null) child,
         ],
       ),
+    );
+  }
+}
+
+class _CardSurfaceSkeleton extends StatelessWidget {
+  const _CardSurfaceSkeleton({
+    required this.config,
+    required this.color,
+    required this.shape,
+    required this.borderRadius,
+  });
+
+  final AutoShimmerConfig config;
+  final Color color;
+  final ShapeBorder shape;
+  final BorderRadiusGeometry borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    if (shape is RoundedRectangleBorder) {
+      return SkeletonBox(
+        config: config,
+        color: color,
+        borderRadius: borderRadius,
+      );
+    }
+
+    return Material(
+      color: color,
+      elevation: 0,
+      shape: shape,
+      clipBehavior: Clip.antiAlias,
     );
   }
 }

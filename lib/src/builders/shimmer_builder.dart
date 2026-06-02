@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../config/auto_shimmer_config.dart';
 import '../config/auto_shimmer_theme.dart';
 import '../core/enums/auto_shimmer_direction.dart';
+import '../effects/auto_shimmer_effect.dart';
 
 /// Builds the effective shimmer config from theme values and local overrides.
 class ShimmerConfigBuilder {
@@ -18,6 +19,7 @@ class ShimmerConfigBuilder {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.effect,
     this.highlightOpacity,
     this.highlightWidth,
   });
@@ -53,6 +55,9 @@ class ShimmerConfigBuilder {
   /// Optional layered rendering override.
   final bool? layeredSkeleton;
 
+  /// Optional custom shimmer painting effect.
+  final AutoShimmerEffect? effect;
+
   /// Optional highlight opacity override.
   final double? highlightOpacity;
 
@@ -72,6 +77,7 @@ class ShimmerConfigBuilder {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      effect: effect,
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,
     );

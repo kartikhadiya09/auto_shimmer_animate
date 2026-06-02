@@ -98,7 +98,7 @@ class ProductListTile extends StatelessWidget {
 </td>
 <td width="48%">
 
-<img src="https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/screenshots/default-example.gif?raw=true" alt="Default shimmer demo" width="320" />
+<img src="screenshots/default-example.gif" alt="Default shimmer demo" width="320" />
 
 </td>
 </tr>
@@ -121,7 +121,7 @@ class ProductListTile extends StatelessWidget {
 </td>
 <td width="48%">
 
-<img src="https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/screenshots/custom-color-example.gif?raw=true" alt="Custom colors demo" width="320" />
+<img src="screenshots/custom-color-example.gif" alt="Custom colors demo" width="320" />
 
 </td>
 </tr>
@@ -145,7 +145,7 @@ class ProductListTile extends StatelessWidget {
 </td>
 <td width="48%">
 
-<img src="https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/screenshots/state-based-example.gif?raw=true" alt="State based loading demo" width="320" />
+<img src="screenshots/state-based-example.gif" alt="State based loading demo" width="320" />
 
 </td>
 </tr>
@@ -183,7 +183,7 @@ Widget _softShimmerBuilder(
 </td>
 <td width="48%">
 
-<img src="https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/screenshots/custom-builder-example.gif?raw=true" alt="Custom builder demo" width="320" />
+<img src="screenshots/custom-builder-example.gif" alt="Custom builder demo" width="320" />
 
 </td>
 </tr>
@@ -204,7 +204,7 @@ Widget _softShimmerBuilder(
 </td>
 <td width="48%">
 
-<img src="https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/screenshots/aurora-example.gif?raw=true" alt="Aurora effect demo" width="320" />
+<img src="screenshots/aurora-example.gif" alt="Aurora effect demo" width="320" />
 
 </td>
 </tr>

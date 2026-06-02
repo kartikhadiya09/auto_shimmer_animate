@@ -4,6 +4,7 @@ import '../builders/shimmer_builder.dart';
 import '../builders/skeleton_builder.dart';
 import '../core/enums/auto_shimmer_direction.dart';
 import '../core/typedefs/auto_shimmer_builder.dart';
+import '../effects/auto_shimmer_effect.dart';
 import 'shimmer_wrapper.dart';
 
 /// Automatically converts an existing widget tree into a shimmer skeleton while
@@ -24,6 +25,7 @@ class AutoShimmerAnimate extends StatelessWidget {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.effect,
     this.highlightOpacity,
     this.highlightWidth,
     this.ignoreContainers = false,
@@ -69,6 +71,9 @@ class AutoShimmerAnimate extends StatelessWidget {
 
   /// Overrides whether parent and child skeleton layers use separate colors.
   final bool? layeredSkeleton;
+
+  /// Overrides the default shimmer painting effect.
+  final AutoShimmerEffect? effect;
 
   /// Overrides the opacity of the moving shimmer highlight.
   final double? highlightOpacity;
@@ -117,6 +122,7 @@ class AutoShimmerAnimate extends StatelessWidget {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      effect: effect,
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,
     ).build(context);

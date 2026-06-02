@@ -1,21 +1,30 @@
-import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../enums/auto_shimmer_direction.dart';
 
-/// Converts package directions to the direction type used by
-/// `shimmer_animation`.
+/// Converts package directions to gradient alignments.
 extension AutoShimmerDirectionAdapter on AutoShimmerDirection {
-  /// Returns the matching `shimmer_animation` direction.
-  ShimmerDirection toShimmerDirection() {
+  /// Gradient start alignment for this direction.
+  AlignmentGeometry get beginAlignment {
     return switch (this) {
       AutoShimmerDirection.leftTopToRightBottom =>
-        const ShimmerDirection.fromLTRB(),
-      AutoShimmerDirection.leftToRight =>
-        const ShimmerDirection.fromLeftToRight(),
-      AutoShimmerDirection.rightToLeft =>
-        const ShimmerDirection.fromRightToLeft(),
-      AutoShimmerDirection.topToBottom => const ShimmerDirection.fromLTRB(),
-      AutoShimmerDirection.bottomToTop => const ShimmerDirection.fromLBRT(),
+        const AlignmentDirectional(-1.0, -0.3),
+      AutoShimmerDirection.leftToRight => AlignmentDirectional.centerStart,
+      AutoShimmerDirection.rightToLeft => AlignmentDirectional.centerEnd,
+      AutoShimmerDirection.topToBottom => Alignment.topCenter,
+      AutoShimmerDirection.bottomToTop => Alignment.bottomCenter,
+    };
+  }
+
+  /// Gradient end alignment for this direction.
+  AlignmentGeometry get endAlignment {
+    return switch (this) {
+      AutoShimmerDirection.leftTopToRightBottom =>
+        const AlignmentDirectional(1.0, 0.3),
+      AutoShimmerDirection.leftToRight => AlignmentDirectional.centerEnd,
+      AutoShimmerDirection.rightToLeft => AlignmentDirectional.centerStart,
+      AutoShimmerDirection.topToBottom => Alignment.bottomCenter,
+      AutoShimmerDirection.bottomToTop => Alignment.topCenter,
     };
   }
 }

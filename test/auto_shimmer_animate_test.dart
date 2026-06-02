@@ -31,7 +31,7 @@ void main() {
     );
 
     expect(find.text('Loaded content'), findsNothing);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerLayer), findsOneWidget);
   });
 
   testWidgets('supports childBaseColor customization', (tester) async {
@@ -96,7 +96,7 @@ void main() {
 
     expect(boxes.any((box) => box.color == Colors.black12), isTrue);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerLayer), findsOneWidget);
   });
 
   testWidgets('card with child keeps child skeleton visible', (tester) async {
@@ -184,7 +184,7 @@ void main() {
     );
 
     expect(find.text('Profile content'), findsNothing);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerLayer), findsOneWidget);
   });
 
   testWidgets('shimmerBuilder wraps generated skeleton', (tester) async {
@@ -195,13 +195,13 @@ void main() {
           shimmerBuilder: (context, child, config) {
             return ColoredBox(color: config.baseColor, child: child);
           },
-          child: const Text('Shimmer builder content'),
+          child: const Text('AutoShimmerLayer builder content'),
         ),
       ),
     );
 
-    expect(find.text('Shimmer builder content'), findsNothing);
-    expect(find.byType(Shimmer), findsNothing);
+    expect(find.text('AutoShimmerLayer builder content'), findsNothing);
+    expect(find.byType(AutoShimmerLayer), findsNothing);
     expect(find.byType(ColoredBox), findsWidgets);
     expect(find.byType(SkeletonBox), findsWidgets);
   });
@@ -226,7 +226,7 @@ void main() {
     expect(find.text('Custom loading UI'), findsNothing);
     expect(find.byType(SkeletonBox), findsNothing);
     expect(find.byType(Container), findsOneWidget);
-    expect(find.byType(Shimmer), findsOneWidget);
+    expect(find.byType(AutoShimmerLayer), findsOneWidget);
   });
 
   testWidgets('loadingBuilder ignored when isLoading is false', (tester) async {
@@ -257,9 +257,11 @@ void main() {
       ),
     );
 
-    final effect = tester.widget<Shimmer>(find.byType(Shimmer));
+    final effect =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
 
-    expect(effect.interval, const Duration(milliseconds: 100));
+    expect(
+        effect.config.effectiveRepeatDelay, const Duration(milliseconds: 100));
   });
 
   testWidgets('enabled false keeps generated skeleton without animation',
@@ -274,10 +276,89 @@ void main() {
       ),
     );
 
-    final effect = tester.widget<Shimmer>(find.byType(Shimmer));
+    final effect =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
 
-    expect(effect.enabled, isFalse);
+    expect(effect.config.enabled, isFalse);
     expect(find.text('Disabled shimmer'), findsNothing);
+  });
+
+  testWidgets('container inside expanded keeps surface and content skeletons',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          baseColor: Colors.black12,
+          childBaseColor: Colors.black26,
+          child: SizedBox(
+            width: 320,
+            height: 120,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Text('Expanded container content'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final boxes = tester
+        .widgetList<SkeletonBox>(find.byType(SkeletonBox))
+        .toList(growable: false);
+
+    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black26), isTrue);
+    expect(find.byType(Expanded), findsOneWidget);
+  });
+
+  testWidgets('supports aurora effect configuration', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          effect: AutoShimmerAuroraEffect(),
+          child: Text('Aurora shimmer'),
+        ),
+      ),
+    );
+
+    final layer =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
+
+    expect(layer.config.resolvedEffect, isA<AutoShimmerAuroraEffect>());
+  });
+
+  testWidgets('switch list tile skeletonizes without keeping original text',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          child: SwitchListTile(
+            value: true,
+            onChanged: null,
+            title: Text('Notifications'),
+            subtitle: Text('Daily summary'),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Notifications'), findsNothing);
+    expect(find.text('Daily summary'), findsNothing);
+    expect(find.byType(SwitchListTile), findsOneWidget);
+    expect(find.byType(SkeletonBox), findsWidgets);
   });
 }
 

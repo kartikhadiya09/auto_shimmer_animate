@@ -4,6 +4,7 @@ import '../adapters/card_adapter.dart';
 import '../adapters/common_widget_adapter.dart';
 import '../adapters/list_tile_adapter.dart';
 import '../adapters/stateless_widget_adapter.dart';
+import '../adapters/switch_list_tile_adapter.dart';
 import '../builders/widget_transformer.dart';
 import '../models/shimmer_node.dart';
 import '../transformers/container_transformer.dart';
@@ -22,6 +23,7 @@ class WidgetParserService {
     TextTransformer(),
     ImageTransformer(),
     IconTransformer(),
+    SwitchListTileAdapter(),
     ListTileAdapter(),
     CardAdapter(),
     ContainerTransformer(),

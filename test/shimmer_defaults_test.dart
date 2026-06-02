@@ -17,14 +17,18 @@ void main() {
     );
 
     final box = tester.widget<SkeletonBox>(find.byType(SkeletonBox).first);
-    final shimmer = tester.widget<Shimmer>(find.byType(Shimmer));
+    final shimmer =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
+    final effect = shimmer.config.resolvedEffect as AutoShimmerSweepEffect;
 
-    expect(box.config.surfaceColor, const Color(0xFFE5E7EB));
-    expect(box.config.contentColor, const Color(0xFFDADDE3));
+    expect(box.config.surfaceColor, const Color(0xFFEBEBF4));
+    expect(box.config.contentColor, const Color(0xFFEBEBF4));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
-    expect(shimmer.color, const Color(0xFFFAFAFA));
-    expect(shimmer.colorOpacity, 0.3);
-    expect(shimmer.duration, const Duration(seconds: 3));
+    expect(effect.baseColor, const Color(0xFFEBEBF4));
+    expect(effect.highlightColor, const Color(0xFFF4F4F4));
+    expect(effect.highlightOpacity, 1.0);
+    expect(effect.stops, const [0.1, 0.3, 0.4]);
+    expect(effect.duration, const Duration(milliseconds: 2000));
   });
 
   testWidgets('uses dark theme shimmer colors by default', (tester) async {
@@ -39,13 +43,16 @@ void main() {
     );
 
     final box = tester.widget<SkeletonBox>(find.byType(SkeletonBox).first);
-    final shimmer = tester.widget<Shimmer>(find.byType(Shimmer));
+    final shimmer =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
+    final effect = shimmer.config.resolvedEffect as AutoShimmerSweepEffect;
 
-    expect(box.config.surfaceColor, const Color(0xFF2A2F3A));
-    expect(box.config.contentColor, const Color(0xFF3A404C));
+    expect(box.config.surfaceColor, const Color(0xFF3A3A3A));
+    expect(box.config.contentColor, const Color(0xFF3A3A3A));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
-    expect(shimmer.color, const Color(0xFFFAFAFA));
-    expect(shimmer.colorOpacity, 0.3);
+    expect(effect.baseColor, const Color(0xFF3A3A3A));
+    expect(effect.highlightColor, const Color(0xFF424242));
+    expect(effect.highlightOpacity, 1.0);
   });
 
   test('config accepts nullable overrides and resolves package defaults', () {
@@ -64,21 +71,21 @@ void main() {
       highlightWidth: null,
     );
 
-    expect(config.baseColor, const Color(0xFFE5E7EB));
-    expect(config.childBaseColor, const Color(0xFFDADDE3));
-    expect(config.highlightColor, const Color(0xFFFAFAFA));
-    expect(config.duration, const Duration(seconds: 3));
+    expect(config.baseColor, const Color(0xFFEBEBF4));
+    expect(config.childBaseColor, const Color(0xFFEBEBF4));
+    expect(config.highlightColor, const Color(0xFFF4F4F4));
+    expect(config.duration, const Duration(milliseconds: 2000));
     expect(config.effectiveRepeatDelay, Duration.zero);
     expect(config.direction, AutoShimmerDirection.leftTopToRightBottom);
     expect(config.enabled, isTrue);
     expect(config.layeredSkeleton, isTrue);
     expect(config.perElementShimmer, isTrue);
-    expect(config.highlightOpacity, 0.3);
-    expect(config.highlightWidth, 0.08);
+    expect(config.highlightOpacity, 1.0);
+    expect(config.highlightWidth, 0.1);
     expect(config.hasShimmerAnimationOverrides, isFalse);
   });
 
-  testWidgets('passes timing and enabled values to shimmer_animation',
+  testWidgets('passes timing and enabled values to internal shimmer layer',
       (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
@@ -92,11 +99,13 @@ void main() {
       ),
     );
 
-    final shimmer = tester.widget<Shimmer>(find.byType(Shimmer));
+    final shimmer =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
 
-    expect(shimmer.duration, const Duration(milliseconds: 900));
-    expect(shimmer.interval, const Duration(milliseconds: 80));
-    expect(shimmer.enabled, isFalse);
+    expect(shimmer.config.duration, const Duration(milliseconds: 900));
+    expect(
+        shimmer.config.effectiveRepeatDelay, const Duration(milliseconds: 80));
+    expect(shimmer.config.enabled, isFalse);
   });
 
   test('config tracks explicit shimmer animation overrides', () {
@@ -134,8 +143,10 @@ void main() {
       ),
     );
 
-    final shimmer = tester.widget<Shimmer>(find.byType(Shimmer));
-    expect(shimmer.color, customColor);
+    final shimmer =
+        tester.widget<AutoShimmerLayer>(find.byType(AutoShimmerLayer));
+    final effect = shimmer.config.resolvedEffect as AutoShimmerSweepEffect;
+    expect(effect.highlightColor, customColor);
   });
 
   testWidgets('user-provided childBaseColor is used exactly', (tester) async {
@@ -155,7 +166,7 @@ void main() {
     expect(config.childBaseColor, customColor);
   });
 
-  testWidgets('default highlight width is reduced for subtle shimmer',
+  testWidgets('default highlight width matches sweep stop spacing',
       (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
@@ -168,6 +179,6 @@ void main() {
 
     final config =
         tester.widget<SkeletonBox>(find.byType(SkeletonBox).first).config;
-    expect(config.highlightWidth, 0.08);
+    expect(config.highlightWidth, 0.1);
   });
 }

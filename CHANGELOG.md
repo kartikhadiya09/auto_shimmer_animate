@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0
+
+- Added the built-in `AutoShimmerLayer` animation renderer.
+- Added `AutoShimmerEffect` with sweep, raw gradient, pulse, and aurora effects.
+- Added `effect` support to `AutoShimmerAnimate`, `AutoShimmerStateAnimate`, and `AutoShimmerConfig`.
+- Aligned default shimmer colors, gradient stops, bounds, and duration with the intended package style.
+- Removed the third-party shimmer dependency from the package API and pubspec.
+- Removed unnecessary `uses-material-design` from `pubspec.yaml`.
+- Added `SwitchListTile` skeleton transformation support.
+- Improved card surface painting for custom `ShapeBorder` values.
+- Added a regression test for skeletonizing a `Container` inside `Expanded`.
+- Updated the example with an aurora tab ready for screen recording.
+- Reworked the README with effect, theme, state, builder, and example guidance.
+
 ## 0.1.1
 
 - Fixed default shimmer highlight to use soft light grey instead of harsh pure white.
@@ -41,5 +55,5 @@
 - `AutoShimmerStateAnimate<T>` for enum, string, object, and custom state values.
 - `AutoShimmerTheme` and `AutoShimmerConfig` for subtree defaults.
 - Automatic skeleton conversion for common Flutter widgets.
-- Custom shimmer builder support using `shimmer_animation`.
+- Custom shimmer builder support.
 - Runnable example application and pub.dev demo GIF.

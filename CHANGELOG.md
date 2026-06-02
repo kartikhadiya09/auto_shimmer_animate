@@ -6,13 +6,15 @@
 - Added `AutoShimmerEffect` with sweep, raw gradient, pulse, and aurora effects.
 - Added `effect` support to `AutoShimmerAnimate`, `AutoShimmerStateAnimate`, and `AutoShimmerConfig`.
 - Aligned default shimmer colors, gradient stops, bounds, and duration with the intended package style.
-- Removed the third-party shimmer dependency from the package API and pubspec.
+- Removed the `shimmer_animation` dependency from `pubspec.yaml`.
+- Removed `Shimmer` and `ShimmerDirection` re-exports from the public API.
 - Removed unnecessary `uses-material-design` from `pubspec.yaml`.
 - Added `SwitchListTile` skeleton transformation support.
 - Improved card surface painting for custom `ShapeBorder` values.
 - Added a regression test for skeletonizing a `Container` inside `Expanded`.
 - Updated the example with an aurora tab ready for screen recording.
-- Reworked the README with effect, theme, state, builder, and example guidance.
+- Replaced the old demo screenshot with separate default, custom color, state, custom builder, and aurora GIFs.
+- Reworked the README with side-by-side use cases, effect, theme, state, builder, and example guidance.
 
 ## 0.1.1
 

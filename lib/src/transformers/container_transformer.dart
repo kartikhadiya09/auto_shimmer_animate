@@ -46,7 +46,9 @@ class ContainerTransformer implements WidgetTransformer {
       return _copyContainer(container, child: child);
     }
 
-    final decoration = _needsSkeletonDecoration(container) && child == null
+    final decoration = _needsSkeletonDecoration(container) &&
+            child == null &&
+            transformContext.paintsBlockSurfaces
         ? SkeletonDecoration.from(
             container.decoration,
             transformContext.config,
@@ -55,7 +57,7 @@ class ContainerTransformer implements WidgetTransformer {
         : null;
     final transformedChild = child == null
         ? null
-        : _surfaceStack(
+        : _withOptionalSurface(
             decoration: container.decoration,
             transformContext: transformContext,
             child: _withContainerLayout(container, child),
@@ -100,7 +102,7 @@ class ContainerTransformer implements WidgetTransformer {
     return _clipToRadius(
       decoration: decoratedBox.decoration,
       transformContext: transformContext,
-      child: _surfaceStack(
+      child: _withOptionalSurface(
         decoration: decoratedBox.decoration,
         transformContext: transformContext,
         child: DecoratedBox(
@@ -110,6 +112,24 @@ class ContainerTransformer implements WidgetTransformer {
         ),
         borderRadius: radius,
       ),
+    );
+  }
+
+  Widget _withOptionalSurface({
+    required Decoration? decoration,
+    required SkeletonTransformContext transformContext,
+    required Widget child,
+    BorderRadiusGeometry? borderRadius,
+  }) {
+    if (!transformContext.paintsBlockBehindChildren) {
+      return child;
+    }
+
+    return _surfaceStack(
+      decoration: decoration,
+      transformContext: transformContext,
+      child: child,
+      borderRadius: borderRadius,
     );
   }
 

@@ -7,8 +7,7 @@ extension AutoShimmerDirectionAdapter on AutoShimmerDirection {
   /// Gradient start alignment for this direction.
   AlignmentGeometry get beginAlignment {
     return switch (this) {
-      AutoShimmerDirection.leftTopToRightBottom =>
-        const AlignmentDirectional(-1.0, -0.3),
+      AutoShimmerDirection.leftTopToRightBottom => Alignment.topLeft,
       AutoShimmerDirection.leftToRight => AlignmentDirectional.centerStart,
       AutoShimmerDirection.rightToLeft => AlignmentDirectional.centerEnd,
       AutoShimmerDirection.topToBottom => Alignment.topCenter,
@@ -19,8 +18,7 @@ extension AutoShimmerDirectionAdapter on AutoShimmerDirection {
   /// Gradient end alignment for this direction.
   AlignmentGeometry get endAlignment {
     return switch (this) {
-      AutoShimmerDirection.leftTopToRightBottom =>
-        const AlignmentDirectional(1.0, 0.3),
+      AutoShimmerDirection.leftTopToRightBottom => Alignment.centerRight,
       AutoShimmerDirection.leftToRight => AlignmentDirectional.centerEnd,
       AutoShimmerDirection.rightToLeft => AlignmentDirectional.centerStart,
       AutoShimmerDirection.topToBottom => Alignment.bottomCenter,

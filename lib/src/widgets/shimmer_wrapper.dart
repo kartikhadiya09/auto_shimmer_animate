@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../config/auto_shimmer_config.dart';
+import '../effects/auto_shimmer_effect.dart';
 
 /// Default animated shimmer renderer for generated skeletons.
 class AutoShimmerLayer extends StatefulWidget {
@@ -125,22 +126,73 @@ class _AutoShimmerLayerState extends State<AutoShimmerLayer>
         animation: _controller,
         child: widget.child,
         builder: (context, child) {
-          return ShaderMask(
-            blendMode: BlendMode.srcATop,
-            shaderCallback: (rect) {
-              return widget.config.resolvedEffect.createShader(
-                _controller.value,
-                rect,
-                textDirection,
-              );
-            },
+          final effect = widget.config.resolvedEffect;
+          return CustomPaint(
+            foregroundPainter: _AutoShimmerPainter(
+              effect: effect,
+              value: _animatedValue(effect),
+              textDirection: textDirection,
+            ),
             child: child,
           );
         },
       ),
     );
   }
+
+  double _animatedValue(AutoShimmerEffect effect) {
+    if (effect.reverse) {
+      return _controller.value;
+    }
+
+    final distance = effect.upperBound - effect.lowerBound;
+    if (distance == 0) {
+      return effect.lowerBound;
+    }
+
+    final progress =
+        ((_controller.value - effect.lowerBound) / distance).clamp(0.0, 1.0);
+    final curved = const Interval(
+      0,
+      0.6,
+      curve: Curves.decelerate,
+    ).transform(progress);
+    return effect.lowerBound + distance * curved;
+  }
 }
 
 /// Backward-compatible name for the default shimmer wrapper.
 typedef ShimmerWrapper = AutoShimmerLayer;
+
+class _AutoShimmerPainter extends CustomPainter {
+  const _AutoShimmerPainter({
+    required this.effect,
+    required this.value,
+    required this.textDirection,
+  });
+
+  final AutoShimmerEffect effect;
+  final double value;
+  final TextDirection? textDirection;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) {
+      return;
+    }
+
+    final rect = Offset.zero & size;
+    final paint = Paint()
+      ..style = PaintingStyle.fill
+      ..shader = effect.createShader(value, rect, textDirection);
+
+    canvas.drawRect(rect, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _AutoShimmerPainter oldDelegate) {
+    return oldDelegate.effect != effect ||
+        oldDelegate.value != value ||
+        oldDelegate.textDirection != textDirection;
+  }
+}

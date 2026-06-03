@@ -25,10 +25,10 @@ void main() {
     expect(box.config.contentColor, const Color(0xFFEBEBF4));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
     expect(effect.baseColor, const Color(0xFFEBEBF4));
-    expect(effect.highlightColor, const Color(0xFFF4F4F4));
-    expect(effect.highlightOpacity, 1.0);
-    expect(effect.stops, const [0.1, 0.3, 0.4]);
-    expect(effect.duration, const Duration(milliseconds: 2000));
+    expect(effect.highlightColor, Colors.white);
+    expect(effect.highlightOpacity, 0.45);
+    expect(effect.stops, isNull);
+    expect(effect.duration, const Duration(seconds: 3));
   });
 
   testWidgets('uses dark theme shimmer colors by default', (tester) async {
@@ -51,8 +51,8 @@ void main() {
     expect(box.config.contentColor, const Color(0xFF3A3A3A));
     expect(box.config.hasShimmerAnimationOverrides, isFalse);
     expect(effect.baseColor, const Color(0xFF3A3A3A));
-    expect(effect.highlightColor, const Color(0xFF424242));
-    expect(effect.highlightOpacity, 1.0);
+    expect(effect.highlightColor, Colors.white);
+    expect(effect.highlightOpacity, 0.45);
   });
 
   test('config accepts nullable overrides and resolves package defaults', () {
@@ -67,21 +67,25 @@ void main() {
       enabled: null,
       layeredSkeleton: null,
       perElementShimmer: null,
+      blockChildShimmer: null,
+      onlyChildShimmer: null,
       highlightOpacity: null,
       highlightWidth: null,
     );
 
     expect(config.baseColor, const Color(0xFFEBEBF4));
     expect(config.childBaseColor, const Color(0xFFEBEBF4));
-    expect(config.highlightColor, const Color(0xFFF4F4F4));
-    expect(config.duration, const Duration(milliseconds: 2000));
+    expect(config.highlightColor, Colors.white);
+    expect(config.duration, const Duration(seconds: 3));
     expect(config.effectiveRepeatDelay, Duration.zero);
     expect(config.direction, AutoShimmerDirection.leftTopToRightBottom);
     expect(config.enabled, isTrue);
     expect(config.layeredSkeleton, isTrue);
     expect(config.perElementShimmer, isTrue);
-    expect(config.highlightOpacity, 1.0);
-    expect(config.highlightWidth, 0.1);
+    expect(config.blockChildShimmer, isFalse);
+    expect(config.onlyChildShimmer, isFalse);
+    expect(config.highlightOpacity, 0.45);
+    expect(config.highlightWidth, 0.2);
     expect(config.hasShimmerAnimationOverrides, isFalse);
   });
 
@@ -179,6 +183,6 @@ void main() {
 
     final config =
         tester.widget<SkeletonBox>(find.byType(SkeletonBox).first).config;
-    expect(config.highlightWidth, 0.1);
+    expect(config.highlightWidth, 0.2);
   });
 }

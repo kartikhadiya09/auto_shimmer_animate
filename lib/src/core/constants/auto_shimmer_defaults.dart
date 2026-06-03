@@ -15,7 +15,7 @@ abstract final class AutoShimmerDefaults {
   static const highlightColor = AutoShimmerColors.highlight;
 
   /// Default shimmer sweep duration.
-  static const duration = Duration(milliseconds: 2000);
+  static const duration = Duration(seconds: 3);
 
   /// Default delay between shimmer sweeps.
   @Deprecated('Use repeatDelay instead.')
@@ -39,9 +39,15 @@ abstract final class AutoShimmerDefaults {
   /// Default per-element shimmer rendering state.
   static const perElementShimmer = true;
 
+  /// Default mode for painting parent blocks behind child skeletons.
+  static const blockChildShimmer = false;
+
+  /// Default mode for showing only leaf/child skeletons.
+  static const onlyChildShimmer = false;
+
   /// Default shimmer highlight opacity.
-  static const highlightOpacity = 1.0;
+  static const highlightOpacity = 0.45;
 
   /// Default shimmer highlight width.
-  static const highlightWidth = 0.1;
+  static const highlightWidth = 0.2;
 }

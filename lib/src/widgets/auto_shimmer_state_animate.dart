@@ -27,6 +27,8 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.blockChildShimmer,
+    this.onlyChildShimmer,
     this.effect,
     this.highlightOpacity,
     this.highlightWidth,
@@ -76,6 +78,12 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
   /// Overrides whether parent and child skeleton layers use separate colors.
   final bool? layeredSkeleton;
 
+  /// Paints parent block surfaces behind child skeletons.
+  final bool? blockChildShimmer;
+
+  /// Paints only child/leaf skeletons and skips parent block surfaces.
+  final bool? onlyChildShimmer;
+
   /// Overrides the default shimmer painting effect.
   final AutoShimmerEffect? effect;
 
@@ -112,6 +120,8 @@ class AutoShimmerStateAnimate<T> extends StatelessWidget {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      blockChildShimmer: blockChildShimmer,
+      onlyChildShimmer: onlyChildShimmer,
       effect: effect,
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,

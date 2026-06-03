@@ -25,6 +25,8 @@ class AutoShimmerConfig {
     bool? enabled,
     bool? layeredSkeleton,
     bool? perElementShimmer,
+    bool? blockChildShimmer,
+    bool? onlyChildShimmer,
     AutoShimmerEffect? effect,
     double? highlightOpacity,
     double? highlightWidth,
@@ -42,6 +44,10 @@ class AutoShimmerConfig {
             layeredSkeleton ?? AutoShimmerDefaults.layeredSkeleton,
         perElementShimmer =
             perElementShimmer ?? AutoShimmerDefaults.perElementShimmer,
+        blockChildShimmer =
+            blockChildShimmer ?? AutoShimmerDefaults.blockChildShimmer,
+        onlyChildShimmer =
+            onlyChildShimmer ?? AutoShimmerDefaults.onlyChildShimmer,
         highlightOpacity =
             highlightOpacity ?? AutoShimmerDefaults.highlightOpacity,
         highlightWidth = highlightWidth ?? AutoShimmerDefaults.highlightWidth,
@@ -68,6 +74,8 @@ class AutoShimmerConfig {
     required this.enabled,
     required this.layeredSkeleton,
     required this.perElementShimmer,
+    required this.blockChildShimmer,
+    required this.onlyChildShimmer,
     required this.effect,
     required this.highlightOpacity,
     required this.highlightWidth,
@@ -114,6 +122,12 @@ class AutoShimmerConfig {
   /// Whether individual skeleton elements animate independently.
   final bool perElementShimmer;
 
+  /// Whether parent blocks should be painted behind child skeletons.
+  final bool blockChildShimmer;
+
+  /// Whether only child/leaf skeletons should be painted.
+  final bool onlyChildShimmer;
+
   /// Optional custom effect used by the internal shimmer renderer.
   final AutoShimmerEffect? effect;
 
@@ -142,6 +156,8 @@ class AutoShimmerConfig {
         enabled: AutoShimmerDefaults.enabled,
         layeredSkeleton: AutoShimmerDefaults.layeredSkeleton,
         perElementShimmer: AutoShimmerDefaults.perElementShimmer,
+        blockChildShimmer: AutoShimmerDefaults.blockChildShimmer,
+        onlyChildShimmer: AutoShimmerDefaults.onlyChildShimmer,
         effect: null,
         highlightOpacity: AutoShimmerDefaults.highlightOpacity,
         highlightWidth: AutoShimmerDefaults.highlightWidth,
@@ -188,6 +204,8 @@ class AutoShimmerConfig {
     bool? enabled,
     bool? layeredSkeleton,
     bool? perElementShimmer,
+    bool? blockChildShimmer,
+    bool? onlyChildShimmer,
     AutoShimmerEffect? effect,
     double? highlightOpacity,
     double? highlightWidth,
@@ -204,6 +222,8 @@ class AutoShimmerConfig {
       enabled: enabled ?? this.enabled,
       layeredSkeleton: layeredSkeleton ?? this.layeredSkeleton,
       perElementShimmer: perElementShimmer ?? this.perElementShimmer,
+      blockChildShimmer: blockChildShimmer ?? this.blockChildShimmer,
+      onlyChildShimmer: onlyChildShimmer ?? this.onlyChildShimmer,
       effect: effect ?? this.effect,
       highlightOpacity: highlightOpacity ?? this.highlightOpacity,
       highlightWidth: highlightWidth ?? this.highlightWidth,
@@ -234,6 +254,8 @@ class AutoShimmerConfig {
             other.enabled == enabled &&
             other.layeredSkeleton == layeredSkeleton &&
             other.perElementShimmer == perElementShimmer &&
+            other.blockChildShimmer == blockChildShimmer &&
+            other.onlyChildShimmer == onlyChildShimmer &&
             other.effect == effect &&
             other.highlightOpacity == highlightOpacity &&
             other.highlightWidth == highlightWidth &&
@@ -254,6 +276,8 @@ class AutoShimmerConfig {
       enabled,
       layeredSkeleton,
       perElementShimmer,
+      blockChildShimmer,
+      onlyChildShimmer,
       effect,
       highlightOpacity,
       highlightWidth,

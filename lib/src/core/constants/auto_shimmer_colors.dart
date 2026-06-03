@@ -9,7 +9,7 @@ abstract final class AutoShimmerColors {
   static const childBase = Color(0xFFEBEBF4);
 
   /// Default moving highlight color.
-  static const highlight = Color(0xFFF4F4F4);
+  static const highlight = Colors.white;
 
   /// Dark theme parent surface skeleton color.
   static const darkBase = Color(0xFF3A3A3A);
@@ -18,5 +18,5 @@ abstract final class AutoShimmerColors {
   static const darkChildBase = Color(0xFF3A3A3A);
 
   /// Dark theme moving highlight color.
-  static const darkHighlight = Color(0xFF424242);
+  static const darkHighlight = Colors.white;
 }

@@ -34,6 +34,13 @@ class SkeletonTransformContext {
     return config.layeredSkeleton ? config.childBaseColor : config.baseColor;
   }
 
+  /// Whether parent block surfaces should be painted for this subtree.
+  bool get paintsBlockSurfaces => !config.onlyChildShimmer;
+
+  /// Whether parent blocks should be painted when they have child skeletons.
+  bool get paintsBlockBehindChildren =>
+      paintsBlockSurfaces && config.blockChildShimmer;
+
   /// Whether visual container widgets should be left unchanged.
   final bool ignoreContainers;
 

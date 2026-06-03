@@ -19,6 +19,8 @@ class ShimmerConfigBuilder {
     this.direction,
     this.enabled,
     this.layeredSkeleton,
+    this.blockChildShimmer,
+    this.onlyChildShimmer,
     this.effect,
     this.highlightOpacity,
     this.highlightWidth,
@@ -55,6 +57,12 @@ class ShimmerConfigBuilder {
   /// Optional layered rendering override.
   final bool? layeredSkeleton;
 
+  /// Optional parent block rendering override.
+  final bool? blockChildShimmer;
+
+  /// Optional child-only rendering override.
+  final bool? onlyChildShimmer;
+
   /// Optional custom shimmer painting effect.
   final AutoShimmerEffect? effect;
 
@@ -77,6 +85,8 @@ class ShimmerConfigBuilder {
       direction: direction,
       enabled: enabled,
       layeredSkeleton: layeredSkeleton,
+      blockChildShimmer: blockChildShimmer,
+      onlyChildShimmer: onlyChildShimmer,
       effect: effect,
       highlightOpacity: highlightOpacity,
       highlightWidth: highlightWidth,

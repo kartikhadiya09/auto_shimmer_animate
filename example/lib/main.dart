@@ -30,7 +30,7 @@ class _ExampleAppState extends State<ExampleApp> {
         useMaterial3: true,
       ),
       home: DefaultTabController(
-        length: 7,
+        length: 21,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Auto Shimmer Animate'),
@@ -58,23 +58,226 @@ class _ExampleAppState extends State<ExampleApp> {
               tabs: [
                 Tab(text: 'Default'),
                 Tab(text: 'Colors'),
-                Tab(text: 'Effects'),
-                Tab(text: 'Modes'),
-                Tab(text: 'Builders'),
-                Tab(text: 'State Theme'),
-                Tab(text: 'Ignore'),
+                Tab(text: 'Flat'),
+                Tab(text: 'Sweep'),
+                Tab(text: 'Aurora'),
+                Tab(text: 'Pulse'),
+                Tab(text: 'Raw'),
+                Tab(text: 'Direction'),
+                Tab(text: 'Delay'),
+                Tab(text: 'Highlight'),
+                Tab(text: 'Child'),
+                Tab(text: 'Block'),
+                Tab(text: 'Disabled'),
+                Tab(text: 'Builder'),
+                Tab(text: 'Loading UI'),
+                Tab(text: 'State'),
+                Tab(text: 'Theme'),
+                Tab(text: 'Ignore Box'),
+                Tab(text: 'Ignore Image'),
+                Tab(text: 'Ignore Text'),
+                Tab(text: 'Radius'),
               ],
             ),
           ),
           body: TabBarView(
             children: [
-              _DefaultTab(isLoading: isLoading),
-              _ColorsTab(isLoading: isLoading),
-              _EffectsTab(isLoading: isLoading),
-              _ModesTab(isLoading: isLoading),
-              _BuildersTab(isLoading: isLoading),
-              _StateThemeTab(status: status),
-              _IgnoreTab(isLoading: isLoading),
+              _FeatureDemo(
+                title: 'Default shimmer',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Custom colors',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  baseColor: Colors.indigo.shade100,
+                  childBaseColor: Colors.indigo.shade200,
+                  highlightColor: Colors.white,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Flat skeleton color',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  layeredSkeleton: false,
+                  baseColor: Colors.teal.shade100,
+                  highlightColor: Colors.white,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Sweep effect',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerSweepEffect(
+                    highlightOpacity: 0.62,
+                    duration: Duration(milliseconds: 1600),
+                  ),
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Aurora effect',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerAuroraEffect(),
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Pulse effect',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerPulseEffect(),
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Raw effect',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  effect: const AutoShimmerRawEffect(
+                    colors: [
+                      Colors.transparent,
+                      Color(0x26FFFFFF),
+                      Color(0xCCFFFFFF),
+                      Color(0x26FFFFFF),
+                      Colors.transparent,
+                    ],
+                    stops: [0, 0.25, 0.48, 0.72, 1],
+                    duration: Duration(milliseconds: 1700),
+                  ),
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Custom direction',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  direction: AutoShimmerDirection.leftToRight,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Repeat delay',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  duration: const Duration(milliseconds: 1200),
+                  repeatDelay: const Duration(milliseconds: 500),
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Highlight intensity',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  highlightOpacity: 0.78,
+                  highlightWidth: 0.32,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Only child shimmer',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  onlyChildShimmer: true,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Block with child shimmer',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  blockChildShimmer: true,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Animation disabled',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  enabled: false,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Custom shimmer builder',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  shimmerBuilder: _softShimmerBuilder,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Custom loading builder',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  loadingBuilder: _loadingBuilder,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'State based loading',
+                child: AutoShimmerStateAnimate<ViewStatus>(
+                  state: status,
+                  loadingStates: const [
+                    ViewStatus.initial,
+                    ViewStatus.loading,
+                  ],
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Theme defaults',
+                child: AutoShimmerTheme(
+                  data: AutoShimmerConfig(
+                    baseColor: Colors.orange.shade100,
+                    childBaseColor: Colors.orange.shade200,
+                    highlightColor: Colors.white,
+                    duration: const Duration(milliseconds: 1300),
+                  ),
+                  child: AutoShimmerAnimate(
+                    isLoading: isLoading,
+                    child: const ProductDemoItem(),
+                  ),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Ignore containers',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  ignoreContainers: true,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Ignore images',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  ignoreImages: true,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Ignore texts',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  ignoreTexts: true,
+                  child: const ProductDemoItem(),
+                ),
+              ),
+              _FeatureDemo(
+                title: 'Custom border radius',
+                child: AutoShimmerAnimate(
+                  isLoading: isLoading,
+                  borderRadius: BorderRadius.circular(18),
+                  child: const ProductDemoItem(),
+                ),
+              ),
             ],
           ),
         ),
@@ -83,351 +286,36 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 }
 
-class _DefaultTab extends StatelessWidget {
-  const _DefaultTab({required this.isLoading});
+class _FeatureDemo extends StatelessWidget {
+  const _FeatureDemo({
+    required this.title,
+    required this.child,
+  });
 
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'With child layout',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Without child layout',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            child: const ProductSurfaceBlock(),
-          ),
-        ),
-        _DemoSection(
-          title: 'List tiles',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Animation disabled',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            enabled: false,
-            child: const ProductListTile(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ColorsTab extends StatelessWidget {
-  const _ColorsTab({required this.isLoading});
-
-  final bool isLoading;
+  final String title;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'Custom colors with child',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            baseColor: Colors.indigo.shade100,
-            childBaseColor: Colors.indigo.shade200,
-            highlightColor: Colors.white,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Custom colors without child',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            baseColor: Colors.indigo.shade100,
-            childBaseColor: Colors.indigo.shade200,
-            highlightColor: Colors.white,
-            child: const ProductSurfaceBlock(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Flat color style',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            baseColor: Colors.teal.shade100,
-            childBaseColor: Colors.teal.shade300,
-            highlightColor: Colors.white,
-            layeredSkeleton: false,
-            child: const ProductList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _EffectsTab extends StatelessWidget {
-  const _EffectsTab({required this.isLoading});
-
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'Sweep effect',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            effect: const AutoShimmerSweepEffect(
-              highlightOpacity: 0.6,
-              duration: Duration(milliseconds: 1600),
-            ),
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Aurora effect',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            effect: const AutoShimmerAuroraEffect(),
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Pulse effect',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            effect: const AutoShimmerPulseEffect(),
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Raw effect',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            effect: const AutoShimmerRawEffect(
-              colors: [
-                Colors.transparent,
-                Color(0x33FFFFFF),
-                Color(0xAAFFFFFF),
-                Color(0x33FFFFFF),
-                Colors.transparent,
-              ],
-              stops: [0, 0.25, 0.45, 0.65, 1],
-              duration: Duration(milliseconds: 1800),
-            ),
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Direction and repeat delay',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            direction: AutoShimmerDirection.leftToRight,
-            duration: const Duration(milliseconds: 1200),
-            repeatDelay: const Duration(milliseconds: 450),
-            child: const ProductList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ModesTab extends StatelessWidget {
-  const _ModesTab({required this.isLoading});
-
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'Child details only',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            onlyChildShimmer: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Block and child shimmer',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            blockChildShimmer: true,
-            baseColor: Colors.blueGrey.shade100,
-            childBaseColor: Colors.blueGrey.shade200,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Block surface only',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            ignoreTexts: true,
-            ignoreImages: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Switch list tile',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            child: const SettingsTile(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BuildersTab extends StatelessWidget {
-  const _BuildersTab({required this.isLoading});
-
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'Custom shimmer builder',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            shimmerBuilder: _softShimmerBuilder,
-            child: const ProductList(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Custom loading builder',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            loadingBuilder: _loadingBuilder,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Custom loading builder with disabled animation',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            enabled: false,
-            loadingBuilder: _loadingBuilder,
-            child: const ProductListTile(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StateThemeTab extends StatelessWidget {
-  const _StateThemeTab({required this.status});
-
-  final ViewStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'State based wrapper',
-          child: AutoShimmerStateAnimate<ViewStatus>(
-            state: status,
-            loadingStates: const [
-              ViewStatus.initial,
-              ViewStatus.loading,
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(18),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 460),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 14),
+              child,
             ],
-            child: const ProductList(),
           ),
         ),
-        _DemoSection(
-          title: 'Theme defaults',
-          child: AutoShimmerTheme(
-            data: AutoShimmerConfig(
-              baseColor: Colors.orange.shade100,
-              childBaseColor: Colors.orange.shade200,
-              highlightColor: Colors.white,
-              duration: const Duration(milliseconds: 1300),
-            ),
-            child: AutoShimmerAnimate(
-              isLoading:
-                  status == ViewStatus.initial || status == ViewStatus.loading,
-              child: const FeaturedProductCard(),
-            ),
-          ),
-        ),
-        _DemoSection(
-          title: 'Local override above theme',
-          child: AutoShimmerTheme(
-            data: AutoShimmerConfig(
-              baseColor: Colors.orange.shade100,
-              childBaseColor: Colors.orange.shade200,
-            ),
-            child: AutoShimmerAnimate(
-              isLoading:
-                  status == ViewStatus.initial || status == ViewStatus.loading,
-              baseColor: Colors.purple.shade100,
-              childBaseColor: Colors.purple.shade200,
-              child: const ProductListTile(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _IgnoreTab extends StatelessWidget {
-  const _IgnoreTab({required this.isLoading});
-
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    return _DemoList(
-      sections: [
-        _DemoSection(
-          title: 'Ignore containers',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            ignoreContainers: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Ignore images',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            ignoreImages: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Ignore texts',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            ignoreTexts: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-        _DemoSection(
-          title: 'Ignore everything except layout',
-          child: AutoShimmerAnimate(
-            isLoading: isLoading,
-            ignoreContainers: true,
-            ignoreImages: true,
-            ignoreTexts: true,
-            child: const FeaturedProductCard(),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -441,7 +329,7 @@ Widget _softShimmerBuilder(
     config: config.copyWith(
       effect: AutoShimmerSweepEffect(
         highlightColor: Colors.teal.shade50,
-        highlightOpacity: 0.8,
+        highlightOpacity: 0.82,
         duration: const Duration(milliseconds: 1400),
       ),
     ),
@@ -454,34 +342,105 @@ Widget _loadingBuilder(
   Widget child,
   AutoShimmerConfig config,
 ) {
-  return Padding(
-    padding: const EdgeInsets.all(4),
+  return Card(
+    clipBehavior: Clip.antiAlias,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: 110,
-          decoration: BoxDecoration(
-            color: config.baseColor,
-            borderRadius: config.borderRadius,
+          height: 150,
+          width: double.infinity,
+          decoration: BoxDecoration(color: config.baseColor),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 240,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: config.childBaseColor,
+                  borderRadius: config.borderRadius,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: config.childBaseColor,
+                  borderRadius: config.borderRadius,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 180,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: config.childBaseColor,
+                  borderRadius: config.borderRadius,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    width: 96,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      color: config.childBaseColor,
+                      borderRadius: config.borderRadius,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    width: 72,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: config.childBaseColor,
+                      borderRadius: config.borderRadius,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 12),
-        Container(
-          width: 210,
-          height: 18,
-          decoration: BoxDecoration(
-            color: config.childBaseColor,
-            borderRadius: BorderRadius.circular(999),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: 140,
-          height: 14,
-          decoration: BoxDecoration(
-            color: config.childBaseColor,
-            borderRadius: BorderRadius.circular(999),
+        const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: config.childBaseColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: config.childBaseColor,
+                    borderRadius: config.borderRadius,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                width: 50,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: config.childBaseColor,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -489,44 +448,8 @@ Widget _loadingBuilder(
   );
 }
 
-class _DemoList extends StatelessWidget {
-  const _DemoList({required this.sections});
-
-  final List<_DemoSection> sections;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: sections.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 18),
-      itemBuilder: (context, index) {
-        final section = sections[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(section.title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 10),
-            section.child,
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _DemoSection {
-  const _DemoSection({
-    required this.title,
-    required this.child,
-  });
-
-  final String title;
-  final Widget child;
-}
-
-class FeaturedProductCard extends StatelessWidget {
-  const FeaturedProductCard({super.key});
+class ProductDemoItem extends StatelessWidget {
+  const ProductDemoItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -536,8 +459,8 @@ class FeaturedProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.network(
-            'https://picsum.photos/seed/auto-shimmer/900/420',
-            height: 180,
+            'https://picsum.photos/seed/auto-shimmer-item/900/420',
+            height: 150,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
@@ -554,7 +477,7 @@ class FeaturedProductCard extends StatelessWidget {
                 Text(
                   'A compact weather-resistant backpack with smart storage.',
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 14),
                 Row(
                   children: [
                     Icon(Icons.star, size: 18),
@@ -570,79 +493,16 @@ class FeaturedProductCard extends StatelessWidget {
               ],
             ),
           ),
+          const Divider(height: 1),
+          const SwitchListTile(
+            value: true,
+            onChanged: null,
+            title: Text('Weekly recommendations'),
+            subtitle: Text('New arrivals and price drops'),
+            secondary: Icon(Icons.notifications_outlined),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class ProductSurfaceBlock extends StatelessWidget {
-  const ProductSurfaceBlock({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      decoration: BoxDecoration(
-        color: Colors.teal.shade100,
-        borderRadius: BorderRadius.circular(14),
-      ),
-    );
-  }
-}
-
-class ProductList extends StatelessWidget {
-  const ProductList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(
-        4,
-        (index) => const Padding(
-          padding: EdgeInsets.only(bottom: 12),
-          child: ProductListTile(),
-        ),
-      ),
-    );
-  }
-}
-
-class ProductListTile extends StatelessWidget {
-  const ProductListTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            'https://picsum.photos/seed/product-list/96',
-            width: 56,
-            height: 56,
-            fit: BoxFit.cover,
-          ),
-        ),
-        title: const Text('Minimal Desk Lamp'),
-        subtitle: const Text('Dimmable warm light with a steel base.'),
-        trailing: const Icon(Icons.chevron_right),
-      ),
-    );
-  }
-}
-
-class SettingsTile extends StatelessWidget {
-  const SettingsTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SwitchListTile(
-      value: true,
-      onChanged: null,
-      title: Text('Weekly recommendations'),
-      subtitle: Text('Notify me when new products are available.'),
-      secondary: Icon(Icons.notifications_outlined),
     );
   }
 }

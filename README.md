@@ -6,7 +6,7 @@ widgets. Wrap your real UI once, pass a loading flag, and
 
 [![pub package](https://img.shields.io/pub/v/auto_shimmer_animate.svg)](https://pub.dev/packages/auto_shimmer_animate)
 [![likes](https://img.shields.io/pub/likes/auto_shimmer_animate)](https://pub.dev/packages/auto_shimmer_animate/score)
-[![popularity](https://img.shields.io/pub/popularity/auto_shimmer_animate)](https://pub.dev/packages/auto_shimmer_animate/score)
+[![pub points](https://img.shields.io/pub/points/auto_shimmer_animate)](https://pub.dev/packages/auto_shimmer_animate/score)
 [![license](https://img.shields.io/github/license/kartikhadiya09/auto_shimmer_animate)](https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/LICENSE)
 
 ## Preview

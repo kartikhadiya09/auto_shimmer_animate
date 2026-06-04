@@ -43,6 +43,10 @@ class CardAdapter implements WidgetTransformer {
         ? shape.borderRadius
         : transformContext.config.borderRadius;
 
+    final shouldPaintSurface = child == null
+        ? transformContext.paintsBlockSurfaces
+        : transformContext.paintsBlockBehindChildren;
+
     return Card(
       color: Colors.transparent,
       margin: card.margin,
@@ -51,14 +55,15 @@ class CardAdapter implements WidgetTransformer {
       clipBehavior: card.clipBehavior ?? Clip.antiAlias,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: _CardSurfaceSkeleton(
-              config: transformContext.config,
-              color: transformContext.surfaceColor,
-              shape: shape,
-              borderRadius: borderRadius,
+          if (shouldPaintSurface)
+            Positioned.fill(
+              child: _CardSurfaceSkeleton(
+                config: transformContext.config,
+                color: transformContext.surfaceColor,
+                shape: shape,
+                borderRadius: borderRadius,
+              ),
             ),
-          ),
           if (child != null) child,
         ],
       ),

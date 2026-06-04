@@ -94,9 +94,36 @@ void main() {
         .widgetList<SkeletonBox>(find.byType(SkeletonBox))
         .toList(growable: false);
 
-    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black12), isFalse);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
     expect(find.byType(AutoShimmerLayer), findsOneWidget);
+  });
+
+  testWidgets('blockChildShimmer keeps parent and child skeletons',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AutoShimmerAnimate(
+          isLoading: true,
+          baseColor: Colors.black12,
+          childBaseColor: Colors.black26,
+          blockChildShimmer: true,
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(12),
+              child: Text('Card text'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final boxes = tester
+        .widgetList<SkeletonBox>(find.byType(SkeletonBox))
+        .toList(growable: false);
+
+    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black26), isTrue);
   });
 
   testWidgets('card with child keeps child skeleton visible', (tester) async {
@@ -122,7 +149,7 @@ void main() {
         .toList(growable: false);
 
     expect(card.color, Colors.transparent);
-    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black12), isFalse);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
   });
 
@@ -143,8 +170,8 @@ void main() {
         .widgetList<SkeletonBox>(find.byType(SkeletonBox))
         .toList(growable: false);
 
-    expect(boxes.length, greaterThan(2));
-    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.length, 2);
+    expect(boxes.any((box) => box.color == Colors.black12), isFalse);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
   });
 
@@ -317,7 +344,7 @@ void main() {
         .widgetList<SkeletonBox>(find.byType(SkeletonBox))
         .toList(growable: false);
 
-    expect(boxes.any((box) => box.color == Colors.black12), isTrue);
+    expect(boxes.any((box) => box.color == Colors.black12), isFalse);
     expect(boxes.any((box) => box.color == Colors.black26), isTrue);
     expect(find.byType(Expanded), findsOneWidget);
   });

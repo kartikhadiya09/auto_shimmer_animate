@@ -41,16 +41,16 @@ class AutoShimmerSweepEffect extends AutoShimmerEffect {
   /// Creates a directional shimmer effect.
   const AutoShimmerSweepEffect({
     this.baseColor = const Color(0xFFEBEBF4),
-    this.highlightColor = const Color(0xFFF4F4F4),
-    this.highlightOpacity = 1.0,
-    this.highlightWidth = 0.1,
-    this.stops = const [0.1, 0.3, 0.4],
-    this.begin = const AlignmentDirectional(-1.0, -0.3),
-    this.end = const AlignmentDirectional(1.0, 0.3),
-    this.tileMode = TileMode.clamp,
-    super.duration = const Duration(milliseconds: 2000),
-    super.lowerBound = -0.5,
-    super.upperBound = 1.5,
+    this.highlightColor = Colors.white,
+    this.highlightOpacity = 0.45,
+    this.highlightWidth = 0.2,
+    this.stops,
+    this.begin = Alignment.topLeft,
+    this.end = Alignment.centerRight,
+    this.tileMode = TileMode.decal,
+    super.duration = const Duration(seconds: 3),
+    super.lowerBound = 0,
+    super.upperBound = 1,
   });
 
   /// Color painted before and after the moving highlight.
@@ -83,40 +83,45 @@ class AutoShimmerSweepEffect extends AutoShimmerEffect {
     Rect rect,
     TextDirection? textDirection,
   ) {
-    final resolvedStops = stops ?? _stopsFromWidth();
+    final resolvedStops = stops != null && stops!.length == 5
+        ? stops!
+        : _stopsFromPosition(value);
+    final shaderRect = _expandedShaderRect(rect);
 
     return LinearGradient(
       colors: [
-        baseColor,
+        Colors.transparent,
+        highlightColor.withValues(alpha: 0.05),
         highlightColor.withValues(alpha: highlightOpacity),
-        baseColor,
+        highlightColor.withValues(alpha: 0.05),
+        Colors.transparent,
       ],
       stops: resolvedStops,
       begin: begin,
       end: end,
       tileMode: tileMode,
-      transform: _SlidingGradientTransform(
-        offset: value,
-        isVertical: _isVertical(textDirection),
-      ),
-    ).createShader(rect, textDirection: textDirection);
+    ).createShader(shaderRect, textDirection: textDirection);
   }
 
-  List<double> _stopsFromWidth() {
+  List<double> _stopsFromPosition(double value) {
+    final position = value.clamp(0.0, 1.0);
     final width = highlightWidth.clamp(0.02, 0.5);
-    final center = 0.3;
     return [
-      (center - width * 2).clamp(0.0, 1.0),
-      center,
-      (center + width).clamp(0.0, 1.0),
+      0.0,
+      position,
+      (position + width).clamp(0.0, 1.0),
+      (position + width * 2).clamp(0.0, 1.0),
+      1.0,
     ];
   }
 
-  bool _isVertical(TextDirection? textDirection) {
-    final direction = textDirection ?? TextDirection.ltr;
-    final resolvedBegin = begin.resolve(direction);
-    final resolvedEnd = end.resolve(direction);
-    return resolvedBegin.x == 0 && resolvedEnd.x == 0;
+  Rect _expandedShaderRect(Rect rect) {
+    return Rect.fromLTRB(
+      rect.width * -0.5,
+      rect.height > rect.width ? 0 : rect.height * -0.5,
+      rect.width * 1.5,
+      rect.height * 1.5,
+    );
   }
 
   @override
@@ -187,7 +192,7 @@ class AutoShimmerRawEffect extends AutoShimmerEffect {
     this.begin = const AlignmentDirectional(-1.0, -0.3),
     this.end = const AlignmentDirectional(1.0, 0.3),
     this.tileMode = TileMode.clamp,
-    super.duration = const Duration(milliseconds: 2000),
+    super.duration = const Duration(seconds: 3),
     super.lowerBound = -0.5,
     super.upperBound = 1.5,
   });

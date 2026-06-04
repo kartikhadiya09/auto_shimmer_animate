@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.1
+
+- Improved default shimmer visibility with softer base colors, a white moving highlight, and tuned sweep timing.
+- Added selective child painting controls with `onlyChildShimmer` and `blockChildShimmer`.
+- Improved shimmer rendering so parent surfaces and child skeleton details stay visible together.
+- Improved card/container skeleton handling for nested child layouts.
+- Expanded tests for default shimmer values, nested container rendering, child skeleton modes, aurora configuration, and switch list tiles.
+- Reworked the example app around one shared product item with tabs for all package features.
+- Replaced the old README/pub.dev GIF set with the new tab-based example GIFs.
+- Updated the README use cases with side-by-side previews and compact code-only examples.
+
 ## 0.2.0
 
 - Added the built-in `AutoShimmerLayer` animation renderer.

@@ -1,24 +1,37 @@
 # Auto Shimmer Animate
 
-`auto_shimmer_animate` turns your existing Flutter UI into animated skeleton
-loading placeholders. Wrap the real layout once, pass a loading flag, and the
-package builds the placeholder tree for you.
+Create animated shimmer skeleton loading states from your existing Flutter
+widgets. Wrap your real UI once, pass a loading flag, and
+`auto_shimmer_animate` builds the placeholder layout for you.
 
 [![pub package](https://img.shields.io/pub/v/auto_shimmer_animate.svg)](https://pub.dev/packages/auto_shimmer_animate)
 [![likes](https://img.shields.io/pub/likes/auto_shimmer_animate)](https://pub.dev/packages/auto_shimmer_animate/score)
 [![popularity](https://img.shields.io/pub/popularity/auto_shimmer_animate)](https://pub.dev/packages/auto_shimmer_animate/score)
 [![license](https://img.shields.io/github/license/kartikhadiya09/auto_shimmer_animate)](https://github.com/kartikhadiya09/auto_shimmer_animate/blob/main/LICENSE)
 
-## Introduction
+## Preview
 
-Skeleton loading keeps a screen shaped like the final content while data is
-being fetched. This package reduces common Flutter widgets into skeleton boxes,
-text bars, image blocks, icon circles, cards, list tiles, and switch list tiles,
-then paints an internal shimmer effect over the generated layout.
+| Default shimmer | Custom colors | Aurora effect | Custom loading UI |
+| --- | --- | --- | --- |
+| ![Default Flutter shimmer skeleton loader](screenshots/default-shimmer.gif) | ![Custom color Flutter shimmer skeleton loader](screenshots/custom-colors.gif) | ![Aurora Flutter shimmer animation effect](screenshots/aurora-effect.gif) | ![Custom loading UI shimmer skeleton loader](screenshots/custom-loading-builder.gif) |
 
-The goal is to avoid maintaining duplicate loading screens. Your normal UI
-stays the source of truth, and the loading state follows the same spacing,
-constraints, and hierarchy.
+See the `example` folder for the full demo app.
+
+## Features
+
+- Auto skeleton generation from existing widget trees
+- Built-in shimmer animation engine
+- No third-party shimmer dependency
+- Layered parent and child skeleton colors
+- Boolean and state-based loading APIs
+- Custom loading builders
+- Custom shimmer wrappers
+- Sweep, raw, pulse, and aurora shimmer effects
+- Theme support for app-wide defaults
+- Direction, duration, repeat delay, highlight opacity, and highlight width
+- Child-only and block-with-child skeleton modes
+- Ignore containers, images, or text when needed
+- Support for common layout, text, image, icon, card, list tile, and switch tile widgets
 
 ## Installation
 
@@ -37,584 +50,277 @@ flutter pub get
 import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 ```
 
-## Features
+## Basic Usage
 
-- Automatic skeleton generation from existing widget trees
-- Built-in shimmer engine with no third-party shimmer dependency
-- Directional sweep, raw gradient, pulse, and aurora effects
-- Light and dark adaptive defaults
-- Layered parent/content skeleton colors
-- Boolean and state-based loading APIs
-- Custom loading builders and shimmer wrappers
-- Theme-level configuration with local overrides
-- Support for common layout, text, image, icon, card, list tile, and switch tile widgets
-
-When `isLoading` is `false`, the original child is returned untouched. When it
-is `true`, the package builds a skeleton version and disables pointer events
-and semantics for the loading placeholder.
-
-## Use Cases
-
-All previews use the same demo layout, so each feature can be compared against
-the same widget tree.
+Wrap the real widget. The same widget tree is used for both loaded and loading
+states.
 
 ```dart
-class ProductDemoItem extends StatelessWidget {
-  const ProductDemoItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://picsum.photos/seed/auto-shimmer-item/900/420',
-            height: 150,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Everyday Travel Pack'),
-                SizedBox(height: 8),
-                Text('A compact weather-resistant backpack.'),
-              ],
-            ),
-          ),
-          const SwitchListTile(
-            value: true,
-            onChanged: null,
-            title: Text('Weekly recommendations'),
-            subtitle: Text('New arrivals and price drops'),
-            secondary: Icon(Icons.notifications_outlined),
-          ),
-        ],
-      ),
-    );
-  }
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    child: const ProductCard(),
+  );
 }
 ```
 
-### Default shimmer
+When `isLoading` is `false`, the original child is returned. When it is `true`,
+the package renders a skeleton version and disables pointer events for the
+loading placeholder.
 
-<table>
-<tr>
-<td width="52%">
+## Loading Lists
 
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/default-shimmer.gif" alt="Default shimmer demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Custom colors
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  baseColor: Colors.indigo.shade100,
-  childBaseColor: Colors.indigo.shade200,
-  highlightColor: Colors.white,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/custom-colors.gif" alt="Custom colors demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Flat skeleton color
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  layeredSkeleton: false,
-  baseColor: Colors.teal.shade100,
-  highlightColor: Colors.white,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/flat-skeleton-color.gif" alt="Flat skeleton color demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Sweep effect
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerSweepEffect(
-    highlightOpacity: 0.62,
-    duration: Duration(milliseconds: 1600),
-  ),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/sweep-effect.gif" alt="Sweep effect demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Aurora effect
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerAuroraEffect(),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/aurora-effect.gif" alt="Aurora effect demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Pulse effect
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerPulseEffect(),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/pluse-effect.gif" alt="Pulse effect demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Raw effect
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerRawEffect(
-    colors: [
-      Colors.transparent,
-      Color(0x26FFFFFF),
-      Color(0xCCFFFFFF),
-      Color(0x26FFFFFF),
-      Colors.transparent,
-    ],
-    stops: [0, 0.25, 0.48, 0.72, 1],
-    duration: Duration(milliseconds: 1700),
-  ),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/raw-effect.gif" alt="Raw effect demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Custom direction
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  direction: AutoShimmerDirection.leftToRight,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/custom-direction.gif" alt="Custom direction demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Repeat delay
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  duration: const Duration(milliseconds: 1200),
-  repeatDelay: const Duration(milliseconds: 500),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/repeat-delay.gif" alt="Repeat delay demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Block with child shimmer
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  blockChildShimmer: true,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/block-with-child-shimmer.gif" alt="Block with child shimmer demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Custom loading builder
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  loadingBuilder: _loadingBuilder,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/custom-loading-builder.gif" alt="Custom loading builder demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Ignore child widgets
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  ignoreContainers: true,
-  ignoreImages: true,
-  ignoreTexts: true,
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/ignore-child-widgets.gif" alt="Ignore child widgets demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Custom border radius
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerAnimate(
-  isLoading: isLoading,
-  borderRadius: BorderRadius.circular(18),
-  child: const ProductDemoItem(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/custom-border-radius.gif" alt="Custom border radius demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Code-only tabs
-
-Some example tabs do not need a separate GIF because they use the same visual
-layout and are mainly API variations.
+If your list is empty while loading, provide placeholder data so the skeleton
+has a shape to render.
 
 ```dart
-// Highlight tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  highlightOpacity: 0.78,
-  highlightWidth: 0.32,
-  child: const ProductDemoItem(),
-)
+Widget build(BuildContext context) {
+  final visibleProducts = isLoading
+      ? List.filled(6, Product.placeholder())
+      : products;
 
-// Child tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  onlyChildShimmer: true,
-  child: const ProductDemoItem(),
-)
-
-// Disabled tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  enabled: false,
-  child: const ProductDemoItem(),
-)
-```
-
-```dart
-// Ignore Box tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  ignoreContainers: true,
-  child: const ProductDemoItem(),
-)
-
-// Ignore Image tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  ignoreImages: true,
-  child: const ProductDemoItem(),
-)
-
-// Ignore Text tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  ignoreTexts: true,
-  child: const ProductDemoItem(),
-)
-```
-
-```dart
-// Builder tab
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  shimmerBuilder: _softShimmerBuilder,
-  child: const ProductDemoItem(),
-)
-
-// State tab
-AutoShimmerStateAnimate<ViewStatus>(
-  state: status,
-  loadingStates: const [
-    ViewStatus.initial,
-    ViewStatus.loading,
-  ],
-  child: const ProductDemoItem(),
-)
-
-// Theme tab
-AutoShimmerTheme(
-  data: AutoShimmerConfig(
-    baseColor: Colors.orange.shade100,
-    childBaseColor: Colors.orange.shade200,
-    highlightColor: Colors.white,
-    duration: const Duration(milliseconds: 1300),
-  ),
-  child: AutoShimmerAnimate(
+  return AutoShimmerAnimate(
     isLoading: isLoading,
-    child: const ProductDemoItem(),
-  ),
-)
+    child: ProductList(products: visibleProducts),
+  );
+}
 ```
 
-## Provide Layout Data
+## Custom Colors
 
-The package needs a widget tree to skeletonize. If your list is empty while
-loading, provide temporary placeholder items so the layout has a shape.
-
-```dart
-final visibleProducts = isLoading
-    ? List.filled(6, Product.placeholder())
-    : products;
-
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  child: ProductList(products: visibleProducts),
-)
-```
-
-For network images, avoid invalid URLs during loading by passing an empty image
-widget, a local placeholder, or `ignoreImages: true`.
+Use separate colors for parent surfaces and child content.
 
 ```dart
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  ignoreImages: true,
-  child: ProductCard(product: product),
-)
-```
-
-## Colors
-
-`baseColor` paints parent surfaces such as cards and containers.
-`childBaseColor` paints content such as text, images, and icons when
-`layeredSkeleton` is enabled. `highlightColor` controls the moving shimmer
-overlay. A short custom-color example is shown in the Use Cases section.
-
-## Effects
-
-### Sweep
-
-```dart
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerSweepEffect(
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    baseColor: Colors.indigo.shade100,
+    childBaseColor: Colors.indigo.shade200,
     highlightColor: Colors.white,
-    highlightOpacity: 0.45,
-    highlightWidth: 0.2,
-    duration: Duration(seconds: 3),
-  ),
-  child: ProductCard(product: product),
-)
+    child: const ProductCard(),
+  );
+}
 ```
 
-### Pulse
+Set `layeredSkeleton: false` when you want parent surfaces and child content to
+use the same skeleton color.
 
 ```dart
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  effect: const AutoShimmerPulseEffect(),
-  child: ProductCard(product: product),
-)
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    layeredSkeleton: false,
+    child: const ProductCard(),
+  );
+}
 ```
 
-Use `AutoShimmerRawEffect` when you want full control over gradient colors,
-stops, alignments, bounds, and duration.
+## State Based Usage
+
+Use `AutoShimmerStateAnimate<T>` when your screen is driven by an enum, string,
+or controller state instead of a boolean.
+
+```dart
+enum ViewStatus { initial, loading, loaded }
+
+Widget build(BuildContext context) {
+  return AutoShimmerStateAnimate<ViewStatus>(
+    state: status,
+    loadingStates: const [
+      ViewStatus.initial,
+      ViewStatus.loading,
+    ],
+    child: const ProductCard(),
+  );
+}
+```
+
+## Custom Loading UI
+
+`loadingBuilder` disables automatic skeleton generation and uses your custom
+loading widget instead. The returned widget still receives the shimmer layer.
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    loadingBuilder: (context, child, config) {
+      return Container(
+        height: 140,
+        decoration: BoxDecoration(
+          color: config.baseColor,
+          borderRadius: config.borderRadius,
+        ),
+      );
+    },
+    child: const ProductCard(),
+  );
+}
+```
+
+Use `shimmerBuilder` when you want to keep automatic skeleton generation but
+customize how the shimmer layer is applied.
+
+```dart
+Widget softShimmerBuilder(
+  BuildContext context,
+  Widget child,
+  AutoShimmerConfig config,
+) {
+  return AutoShimmerLayer(
+    config: config.copyWith(
+      effect: AutoShimmerSweepEffect(
+        highlightColor: Colors.teal.shade50,
+        highlightOpacity: 0.8,
+      ),
+    ),
+    child: child,
+  );
+}
+```
+
+## Shimmer Effects
+
+Use the default sweep effect, or pass a custom effect.
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    effect: const AutoShimmerAuroraEffect(),
+    child: const ProductCard(),
+  );
+}
+```
+
+Available effects:
+
+| Effect | Use case |
+| --- | --- |
+| `AutoShimmerSweepEffect` | Classic directional shimmer |
+| `AutoShimmerAuroraEffect` | Soft multi-color shimmer |
+| `AutoShimmerPulseEffect` | Low-motion loading state |
+| `AutoShimmerRawEffect` | Fully custom gradient colors and stops |
 
 ## Direction And Timing
 
 ```dart
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  direction: AutoShimmerDirection.leftToRight,
-  duration: const Duration(milliseconds: 1400),
-  repeatDelay: const Duration(milliseconds: 120),
-  child: ProductCard(product: product),
-)
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    direction: AutoShimmerDirection.leftToRight,
+    duration: const Duration(milliseconds: 1400),
+    repeatDelay: const Duration(milliseconds: 300),
+    child: const ProductCard(),
+  );
+}
 ```
 
-`enabled: false` keeps the generated skeleton visible without running the
-animation.
+You can also tune `highlightOpacity` and `highlightWidth` for a softer or more
+visible shimmer.
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    highlightOpacity: 0.7,
+    highlightWidth: 0.3,
+    child: const ProductCard(),
+  );
+}
+```
+
+## Skeleton Modes
+
+Use child modes when your UI has nested cards, containers, or complex layouts.
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    onlyChildShimmer: true,
+    child: const ProductCard(),
+  );
+}
+```
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    blockChildShimmer: true,
+    child: const ProductCard(),
+  );
+}
+```
+
+## Ignore Parts Of A Widget Tree
+
+Keep selected widget types visible while the rest of the tree is skeletonized.
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    ignoreImages: true,
+    child: const ProductCard(),
+  );
+}
+```
+
+```dart
+Widget build(BuildContext context) {
+  return AutoShimmerAnimate(
+    isLoading: isLoading,
+    ignoreContainers: true,
+    ignoreTexts: true,
+    child: const ProductCard(),
+  );
+}
+```
+
+This is useful for network images, branded containers, or text that should stay
+visible during loading.
 
 ## Global Theme
 
+Provide shared defaults to a subtree with `AutoShimmerTheme`.
+
 ```dart
-AutoShimmerTheme(
-  data: const AutoShimmerConfig(
-    baseColor: Color(0xFFE6E8EF),
-    childBaseColor: Color(0xFFD6DAE2),
-    effect: AutoShimmerAuroraEffect(),
-  ),
-  child: MyApp(),
-)
+Widget build(BuildContext context) {
+  return AutoShimmerTheme(
+    data: AutoShimmerConfig(
+      baseColor: Colors.grey.shade200,
+      childBaseColor: Colors.grey.shade300,
+      highlightColor: Colors.white,
+      duration: const Duration(seconds: 2),
+    ),
+    child: const MyApp(),
+  );
+}
 ```
 
 Values passed directly to `AutoShimmerAnimate` override the nearest
 `AutoShimmerTheme`.
 
-## State-Based Usage
+## Common Tips
 
-Use `AutoShimmerStateAnimate<T>` when your screen is driven by enum, string, or
-object states instead of a boolean loading flag. A short state-based example is
-shown in the Use Cases section.
-
-## Custom Builders
-
-Use `loadingBuilder` to skip automatic skeleton generation and provide your own
-loading UI. The returned widget still receives the default shimmer layer.
-
-```dart
-AutoShimmerAnimate(
-  isLoading: isLoading,
-  loadingBuilder: (context, _, config) {
-    return SizedBox(
-      height: 120,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: config.baseColor,
-          borderRadius: config.borderRadius,
-        ),
-      ),
-    );
-  },
-  child: ProductCard(product: product),
-)
-```
-
-Use `shimmerBuilder` to replace how the generated skeleton is animated. A short
-`shimmerBuilder` example is shown in the Use Cases section.
+- Keep placeholder list lengths close to the final content length.
+- Use valid image widgets or `ignoreImages: true` while data is loading.
+- Use `loadingBuilder` only when you want to skip automatic skeleton generation.
+- Use `shimmerBuilder` when you want to keep auto skeletons but change animation wrapping.
+- Use `enabled: false` to show a static skeleton without animation.
 
 ## Example App
 
 ```sh
 cd example
-flutter pub get
 flutter run
 ```
 
-The example includes a single shared product item wrapped by each package
-feature: colors, effects, direction, delay, child modes, builders, state,
-theme, ignore flags, and border radius.
+See the `example` folder for all demos, including custom colors, effects,
+state-based loading, custom loading builders, theme usage, ignore flags, and
+skeleton modes.
 
 ## API Overview
 

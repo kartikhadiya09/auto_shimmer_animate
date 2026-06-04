@@ -18,20 +18,8 @@ screenshots:
     path: screenshots/default-shimmer.gif
   - description: Auto Shimmer Animate custom color demo.
     path: screenshots/custom-colors.gif
-  - description: Auto Shimmer Animate flat skeleton color demo.
-    path: screenshots/flat-skeleton-color.gif
-  - description: Auto Shimmer Animate sweep effect demo.
-    path: screenshots/sweep-effect.gif
   - description: Auto Shimmer Animate aurora effect demo.
     path: screenshots/aurora-effect.gif
-  - description: Auto Shimmer Animate pulse effect demo.
-    path: screenshots/pluse-effect.gif
-  - description: Auto Shimmer Animate raw effect demo.
-    path: screenshots/raw-effect.gif
-  - description: Auto Shimmer Animate repeat delay demo.
-    path: screenshots/repeat-delay.gif
-  - description: Auto Shimmer Animate block with child shimmer demo.
-    path: screenshots/block-with-child-shimmer.gif
   - description: Auto Shimmer Animate custom loading builder demo.
     path: screenshots/custom-loading-builder.gif
 

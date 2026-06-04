@@ -24,7 +24,7 @@ constraints, and hierarchy.
 
 ```yaml
 dependencies:
-  auto_shimmer_animate: ^0.2.0
+  auto_shimmer_animate: ^0.2.1
 ```
 
 ```sh
@@ -55,29 +55,45 @@ and semantics for the loading placeholder.
 
 ## Use Cases
 
-All previews use the same demo layout: a featured product card followed by a
-recommended product tile list.
+All previews use the same demo layout, so each feature can be compared against
+the same widget tree.
 
 ```dart
-class ProductListTile extends StatelessWidget {
-  const ProductListTile({super.key});
+class ProductDemoItem extends StatelessWidget {
+  const ProductDemoItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            'https://picsum.photos/seed/product-list/96',
-            width: 56,
-            height: 56,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(
+            'https://picsum.photos/seed/auto-shimmer-item/900/420',
+            height: 150,
+            width: double.infinity,
             fit: BoxFit.cover,
           ),
-        ),
-        title: const Text('Minimal Desk Lamp'),
-        subtitle: const Text('Dimmable warm light with a steel base.'),
-        trailing: const Icon(Icons.chevron_right),
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Everyday Travel Pack'),
+                SizedBox(height: 8),
+                Text('A compact weather-resistant backpack.'),
+              ],
+            ),
+          ),
+          const SwitchListTile(
+            value: true,
+            onChanged: null,
+            title: Text('Weekly recommendations'),
+            subtitle: Text('New arrivals and price drops'),
+            secondary: Icon(Icons.notifications_outlined),
+          ),
+        ],
       ),
     );
   }
@@ -92,13 +108,13 @@ class ProductListTile extends StatelessWidget {
 
 <pre><code class="language-dart">AutoShimmerAnimate(
   isLoading: isLoading,
-  child: const ProductList(),
+  child: const ProductDemoItem(),
 )</code></pre>
 
 </td>
 <td width="48%">
 
-<img src="screenshots/default-example.gif" alt="Default shimmer demo" width="320" />
+<img src="screenshots/default-shimmer.gif" alt="Default shimmer demo" width="320" />
 
 </td>
 </tr>
@@ -115,43 +131,19 @@ class ProductListTile extends StatelessWidget {
   baseColor: Colors.indigo.shade100,
   childBaseColor: Colors.indigo.shade200,
   highlightColor: Colors.white,
-  child: const ProductList(),
+  child: const ProductDemoItem(),
 )</code></pre>
 
 </td>
 <td width="48%">
 
-<img src="screenshots/custom-color-example.gif" alt="Custom colors demo" width="320" />
+<img src="screenshots/custom-colors.gif" alt="Custom colors demo" width="320" />
 
 </td>
 </tr>
 </table>
 
-### State based loading
-
-<table>
-<tr>
-<td width="52%">
-
-<pre><code class="language-dart">AutoShimmerStateAnimate&lt;ViewStatus&gt;(
-  state: status,
-  loadingStates: const [
-    ViewStatus.initial,
-    ViewStatus.loading,
-  ],
-  child: const ProductList(),
-)</code></pre>
-
-</td>
-<td width="48%">
-
-<img src="screenshots/state-based-example.gif" alt="State based loading demo" width="320" />
-
-</td>
-</tr>
-</table>
-
-### Custom builder
+### Flat skeleton color
 
 <table>
 <tr>
@@ -159,31 +151,40 @@ class ProductListTile extends StatelessWidget {
 
 <pre><code class="language-dart">AutoShimmerAnimate(
   isLoading: isLoading,
-  shimmerBuilder: _softShimmerBuilder,
-  child: const ProductList(),
-)
-
-Widget _softShimmerBuilder(
-  BuildContext context,
-  Widget child,
-  AutoShimmerConfig config,
-) {
-  return AutoShimmerLayer(
-    config: config.copyWith(
-      effect: AutoShimmerSweepEffect(
-        highlightColor: Colors.teal.shade50,
-        highlightOpacity: 0.8,
-        duration: const Duration(milliseconds: 1400),
-      ),
-    ),
-    child: child,
-  );
-}</code></pre>
+  layeredSkeleton: false,
+  baseColor: Colors.teal.shade100,
+  highlightColor: Colors.white,
+  child: const ProductDemoItem(),
+)</code></pre>
 
 </td>
 <td width="48%">
 
-<img src="screenshots/custom-builder-example.gif" alt="Custom builder demo" width="320" />
+<img src="screenshots/flat-skeleton-color.gif" alt="Flat skeleton color demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Sweep effect
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  effect: const AutoShimmerSweepEffect(
+    highlightOpacity: 0.62,
+    duration: Duration(milliseconds: 1600),
+  ),
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/sweep-effect.gif" alt="Sweep effect demo" width="320" />
 
 </td>
 </tr>
@@ -198,17 +199,283 @@ Widget _softShimmerBuilder(
 <pre><code class="language-dart">AutoShimmerAnimate(
   isLoading: isLoading,
   effect: const AutoShimmerAuroraEffect(),
-  child: const ProductList(),
+  child: const ProductDemoItem(),
 )</code></pre>
 
 </td>
 <td width="48%">
 
-<img src="screenshots/aurora-example.gif" alt="Aurora effect demo" width="320" />
+<img src="screenshots/aurora-effect.gif" alt="Aurora effect demo" width="320" />
 
 </td>
 </tr>
 </table>
+
+### Pulse effect
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  effect: const AutoShimmerPulseEffect(),
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/pluse-effect.gif" alt="Pulse effect demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Raw effect
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  effect: const AutoShimmerRawEffect(
+    colors: [
+      Colors.transparent,
+      Color(0x26FFFFFF),
+      Color(0xCCFFFFFF),
+      Color(0x26FFFFFF),
+      Colors.transparent,
+    ],
+    stops: [0, 0.25, 0.48, 0.72, 1],
+    duration: Duration(milliseconds: 1700),
+  ),
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/raw-effect.gif" alt="Raw effect demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Custom direction
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  direction: AutoShimmerDirection.leftToRight,
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/custom-direction.gif" alt="Custom direction demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Repeat delay
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  duration: const Duration(milliseconds: 1200),
+  repeatDelay: const Duration(milliseconds: 500),
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/repeat-delay.gif" alt="Repeat delay demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Block with child shimmer
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  blockChildShimmer: true,
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/block-with-child-shimmer.gif" alt="Block with child shimmer demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Custom loading builder
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  loadingBuilder: _loadingBuilder,
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/custom-loading-builder.gif" alt="Custom loading builder demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Ignore child widgets
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  ignoreContainers: true,
+  ignoreImages: true,
+  ignoreTexts: true,
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/ignore-child-widgets.gif" alt="Ignore child widgets demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Custom border radius
+
+<table>
+<tr>
+<td width="52%">
+
+<pre><code class="language-dart">AutoShimmerAnimate(
+  isLoading: isLoading,
+  borderRadius: BorderRadius.circular(18),
+  child: const ProductDemoItem(),
+)</code></pre>
+
+</td>
+<td width="48%">
+
+<img src="screenshots/custom-border-radius.gif" alt="Custom border radius demo" width="320" />
+
+</td>
+</tr>
+</table>
+
+### Code-only tabs
+
+Some example tabs do not need a separate GIF because they use the same visual
+layout and are mainly API variations.
+
+```dart
+// Highlight tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  highlightOpacity: 0.78,
+  highlightWidth: 0.32,
+  child: const ProductDemoItem(),
+)
+
+// Child tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  onlyChildShimmer: true,
+  child: const ProductDemoItem(),
+)
+
+// Disabled tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  enabled: false,
+  child: const ProductDemoItem(),
+)
+```
+
+```dart
+// Ignore Box tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  ignoreContainers: true,
+  child: const ProductDemoItem(),
+)
+
+// Ignore Image tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  ignoreImages: true,
+  child: const ProductDemoItem(),
+)
+
+// Ignore Text tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  ignoreTexts: true,
+  child: const ProductDemoItem(),
+)
+```
+
+```dart
+// Builder tab
+AutoShimmerAnimate(
+  isLoading: isLoading,
+  shimmerBuilder: _softShimmerBuilder,
+  child: const ProductDemoItem(),
+)
+
+// State tab
+AutoShimmerStateAnimate<ViewStatus>(
+  state: status,
+  loadingStates: const [
+    ViewStatus.initial,
+    ViewStatus.loading,
+  ],
+  child: const ProductDemoItem(),
+)
+
+// Theme tab
+AutoShimmerTheme(
+  data: AutoShimmerConfig(
+    baseColor: Colors.orange.shade100,
+    childBaseColor: Colors.orange.shade200,
+    highlightColor: Colors.white,
+    duration: const Duration(milliseconds: 1300),
+  ),
+  child: AutoShimmerAnimate(
+    isLoading: isLoading,
+    child: const ProductDemoItem(),
+  ),
+)
+```
 
 ## Provide Layout Data
 
@@ -253,9 +520,9 @@ AutoShimmerAnimate(
   isLoading: isLoading,
   effect: const AutoShimmerSweepEffect(
     highlightColor: Colors.white,
-    highlightOpacity: 1.0,
-    highlightWidth: 0.1,
-    duration: Duration(milliseconds: 2000),
+    highlightOpacity: 0.45,
+    highlightWidth: 0.2,
+    duration: Duration(seconds: 3),
   ),
   child: ProductCard(product: product),
 )
@@ -345,9 +612,9 @@ flutter pub get
 flutter run
 ```
 
-The example includes default shimmer, custom colors, state-based loading,
-custom builder usage, and an aurora tab that is ready for GIF or screen
-recording capture.
+The example includes a single shared product item wrapped by each package
+feature: colors, effects, direction, delay, child modes, builders, state,
+theme, ignore flags, and border radius.
 
 ## API Overview
 
@@ -371,16 +638,18 @@ recording capture.
 | `child` | `Widget` | required | Widget tree to skeletonize |
 | `baseColor` | `Color?` | adaptive | Parent surface skeleton color |
 | `childBaseColor` | `Color?` | adaptive | Content skeleton color |
-| `highlightColor` | `Color?` | `0xFFF4F4F4` | Sweep highlight color |
+| `highlightColor` | `Color?` | `Colors.white` | Sweep highlight color |
+| `highlightOpacity` | `double?` | `0.45` | Sweep highlight opacity |
+| `highlightWidth` | `double?` | `0.2` | Sweep highlight band width |
 | `effect` | `AutoShimmerEffect?` | sweep | Custom shimmer effect |
-| `duration` | `Duration?` | `2000ms` | Sweep duration |
+| `duration` | `Duration?` | `3s` | Sweep duration |
 | `repeatDelay` | `Duration?` | `0ms` | Delay between sweep repeats |
 | `direction` | `AutoShimmerDirection?` | diagonal | Sweep direction |
 | `borderRadius` | `BorderRadius?` | `8px` | Default skeleton radius |
 | `enabled` | `bool?` | `true` | Enables or disables animation |
 | `layeredSkeleton` | `bool?` | `true` | Uses separate parent/content colors |
-| `highlightOpacity` | `double?` | `1.0` | Sweep highlight opacity |
-| `highlightWidth` | `double?` | `0.1` | Sweep highlight band width |
+| `blockChildShimmer` | `bool?` | `false` | Paints parent blocks behind child skeletons |
+| `onlyChildShimmer` | `bool?` | `false` | Paints only child/leaf skeletons |
 | `ignoreContainers` | `bool` | `false` | Keeps container visuals unchanged |
 | `ignoreImages` | `bool` | `false` | Keeps image widgets visible |
 | `ignoreTexts` | `bool` | `false` | Keeps text widgets visible |

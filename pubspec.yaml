@@ -1,6 +1,6 @@
 name: auto_shimmer_animate
 description: A Flutter package that automatically converts existing widget trees into animated shimmer skeleton loading states.
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/kartikhadiya09/auto_shimmer_animate
 repository: https://github.com/kartikhadiya09/auto_shimmer_animate
 issue_tracker: https://github.com/kartikhadiya09/auto_shimmer_animate/issues
@@ -15,11 +15,25 @@ topics:
 
 screenshots:
   - description: Default Auto Shimmer Animate skeleton loading demo.
-    path: screenshots/default-example.gif
+    path: screenshots/default-shimmer.gif
   - description: Auto Shimmer Animate custom color demo.
-    path: screenshots/custom-color-example.gif
+    path: screenshots/custom-colors.gif
+  - description: Auto Shimmer Animate flat skeleton color demo.
+    path: screenshots/flat-skeleton-color.gif
+  - description: Auto Shimmer Animate sweep effect demo.
+    path: screenshots/sweep-effect.gif
   - description: Auto Shimmer Animate aurora effect demo.
-    path: screenshots/aurora-example.gif
+    path: screenshots/aurora-effect.gif
+  - description: Auto Shimmer Animate pulse effect demo.
+    path: screenshots/pluse-effect.gif
+  - description: Auto Shimmer Animate raw effect demo.
+    path: screenshots/raw-effect.gif
+  - description: Auto Shimmer Animate repeat delay demo.
+    path: screenshots/repeat-delay.gif
+  - description: Auto Shimmer Animate block with child shimmer demo.
+    path: screenshots/block-with-child-shimmer.gif
+  - description: Auto Shimmer Animate custom loading builder demo.
+    path: screenshots/custom-loading-builder.gif
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
